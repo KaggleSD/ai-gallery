@@ -267,12 +267,12 @@ body::before {
   font-family: var(--mono);
 }
 
-/* Metadata Tooltip */
+/* Metadata Tooltip - enlarged */
 .meta-tooltip {
   position: fixed;
   z-index: 500;
-  width: 400px;
-  max-height: 45vh;
+  width: 440px;
+  max-height: 75vh;
   background: var(--bg2);
   border: 1px solid var(--accent);
   border-radius: 10px;
@@ -330,6 +330,37 @@ body::before {
   border-radius: 6px;
   border: 1px solid var(--border);
 }
+/* Expandable long values */
+.meta-value.collapsed {
+  max-height: 120px;
+  overflow: hidden;
+  position: relative;
+}
+.meta-value.collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(transparent, var(--bg));
+  pointer-events: none;
+}
+.meta-expand-btn {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 10px;
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--accent2);
+  background: var(--accent-glow);
+  border: 1px solid rgba(124,106,239,0.25);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.meta-expand-btn:hover { background: var(--accent); color: #fff; }
+
 .meta-loading {
   text-align: center;
   padding: 20px;
@@ -472,12 +503,32 @@ body::before {
   flex-direction: column;
   gap: 16px;
   animation: fadeIn 0.2s;
+  overflow-y: auto;
 }
 .lightbox.open { display: flex; }
 @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
 
-.lightbox img {
-  max-width: 90vw;
+.lightbox-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 20px;
+  max-width: 95vw;
+  max-height: 90vh;
+  padding: 20px 0;
+}
+
+.lightbox-img-side {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 60vw;
+}
+
+.lightbox-img-side img {
+  max-width: 60vw;
   max-height: 80vh;
   border-radius: 8px;
   box-shadow: 0 0 60px rgba(124,106,239,0.15);
@@ -494,7 +545,6 @@ body::before {
 
 .lb-download-btn {
   display: inline-block;
-  margin-top: 12px;
   padding: 8px 24px;
   border-radius: 8px;
   border: 1px solid var(--accent);
@@ -509,8 +559,94 @@ body::before {
 }
 .lb-download-btn:hover { background: var(--accent); color: #fff; }
 
+/* Lightbox metadata panel */
+.lb-meta-panel {
+  width: 380px;
+  max-height: 80vh;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.lb-meta-panel.hidden { display: none; }
+.lb-meta-header {
+  padding: 12px 16px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  font-family: var(--mono);
+  color: var(--accent2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.lb-meta-header .lb-meta-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lb-meta-copy-btn {
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text2);
+  font-size: 11px;
+  font-family: var(--mono);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lb-meta-copy-btn:hover { border-color: var(--accent); color: var(--accent2); }
+.lb-meta-body {
+  padding: 14px 16px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+.lb-meta-body::-webkit-scrollbar { width: 4px; }
+.lb-meta-body::-webkit-scrollbar-track { background: transparent; }
+.lb-meta-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.lb-meta-toggle {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-size: 12px;
+  font-family: var(--mono);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lb-meta-toggle:hover { border-color: var(--accent); color: var(--accent2); }
+.lb-meta-toggle.active { border-color: var(--accent); color: var(--accent2); background: var(--accent-glow); }
+
+@media (max-width: 900px) {
+  .lightbox-content {
+    flex-direction: column;
+    align-items: center;
+    max-height: none;
+  }
+  .lightbox-img-side {
+    max-width: 90vw;
+  }
+  .lightbox-img-side img {
+    max-width: 90vw;
+    max-height: 50vh;
+  }
+  .lb-meta-panel {
+    width: 90vw;
+    max-height: 40vh;
+  }
+}
+
 .lightbox-close {
-  position: absolute;
+  position: fixed;
   top: 20px;
   right: 24px;
   width: 40px;
@@ -525,10 +661,11 @@ body::before {
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  z-index: 10;
 }
 .lightbox-close:hover { border-color: var(--danger); color: var(--danger); }
 .lightbox-nav {
-  position: absolute;
+  position: fixed;
   top: 50%;
   transform: translateY(-50%);
   width: 48px;
@@ -543,6 +680,7 @@ body::before {
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  z-index: 10;
 }
 .lightbox-nav:hover { border-color: var(--accent); }
 .lightbox-nav.prev { left: 20px; }
@@ -690,9 +828,23 @@ body::before {
   <button class="lightbox-close" onclick="closeLightbox()">×</button>
   <button class="lightbox-nav prev" onclick="navLightbox(-1)">‹</button>
   <button class="lightbox-nav next" onclick="navLightbox(1)">›</button>
-  <img id="lbImg" src="" alt="">
-  <div class="lightbox-info" id="lbInfo"></div>
-  <a id="lbDownload" class="lb-download-btn" download>⬇ 下载原图</a>
+  <div class="lightbox-content">
+    <div class="lightbox-img-side">
+      <img id="lbImg" src="" alt="">
+      <div class="lightbox-info" id="lbInfo"></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center">
+        <a id="lbDownload" class="lb-download-btn" download>⬇ 下载原图</a>
+        <button class="lb-meta-toggle" id="lbMetaToggle" onclick="toggleLbMeta()">📋 元数据</button>
+      </div>
+    </div>
+    <div class="lb-meta-panel hidden" id="lbMetaPanel">
+      <div class="lb-meta-header">
+        <div class="lb-meta-title">📋 完整 Metadata</div>
+        <button class="lb-meta-copy-btn" onclick="copyAllMeta()">复制全部</button>
+      </div>
+      <div class="lb-meta-body" id="lbMetaBody"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -707,57 +859,44 @@ const metaCache = {};
 let hoverTimer = null;
 let currentHoverCard = null;
 let searchQQ = '';
+let lbMetaVisible = false;
+let currentFullMetaText = '';
 
-function showMetaTooltip(cardEl, item) {
-  const tooltip = document.getElementById('metaTooltip');
-  const body = document.getElementById('metaTooltipBody');
-  const cacheKey = `${currentCollection}/${item.filename}`;
+/* ===== METADATA RENDERING (NO TRUNCATION) ===== */
 
-  const rect = cardEl.getBoundingClientRect();
-  const tw = 400;
-  let left = rect.right + 12;
-  let top = rect.top;
-  if (left + tw > window.innerWidth - 16) {
-    left = rect.left - tw - 12;
-  }
-  if (left < 16) {
-    left = Math.max(16, rect.left + rect.width / 2 - tw / 2);
-    top = rect.bottom + 8;
-  }
-  const maxH = window.innerHeight * 0.45;
-  if (top + maxH > window.innerHeight - 16) {
-    top = window.innerHeight - maxH - 16;
-  }
-  if (top < 8) top = 8;
+const COLLAPSE_THRESHOLD = 400; // chars before collapse in tooltip; full in lightbox
 
-  tooltip.style.left = left + 'px';
-  tooltip.style.top = top + 'px';
-  tooltip.classList.add('visible');
-
-  if (metaCache[cacheKey]) {
-    renderMetaContent(body, metaCache[cacheKey]);
-  } else {
-    body.innerHTML = '<div class="meta-loading"><span class="mini-spinner"></span>加载中...</div>';
-    fetch(`${API}/api/meta/${currentCollection}/${item.filename}`)
-      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(data => {
-        metaCache[cacheKey] = data;
-        if (currentHoverCard === cardEl) renderMetaContent(body, data);
-      })
-      .catch(() => {
-        if (currentHoverCard === cardEl)
-          body.innerHTML = '<div class="meta-loading" style="color:var(--text2)">无元数据</div>';
-      });
-  }
+function renderMetaRow(label, value, allowCollapse) {
+  // NO truncation - show everything
+  const needsCollapse = allowCollapse && value.length > COLLAPSE_THRESHOLD;
+  const id = 'mr_' + Math.random().toString(36).slice(2, 9);
+  return `<div class="meta-row">
+    <div class="meta-label">${escapeHtml(String(label))}</div>
+    <div class="meta-value ${needsCollapse ? 'collapsed' : ''}" id="${id}">${escapeHtml(value)}</div>
+    ${needsCollapse ? `<span class="meta-expand-btn" onclick="toggleExpand(this,'${id}')">展开全部</span>` : ''}
+  </div>`;
 }
 
-function renderMetaContent(container, meta) {
+function toggleExpand(btn, id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const isCollapsed = el.classList.contains('collapsed');
+  el.classList.toggle('collapsed');
+  btn.textContent = isCollapsed ? '收起' : '展开全部';
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderMetaContent(container, meta, allowCollapse) {
   const pm = meta.png_metadata;
   if (!pm || Object.keys(pm).length === 0) {
     container.innerHTML = '<div class="meta-loading" style="color:var(--text2)">无 PNG Metadata</div>';
     return;
   }
   let html = '';
+  const allParts = [];
   for (const [key, value] of Object.entries(pm)) {
     const str = typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value);
     const parsed = tryParseJSON(str);
@@ -767,20 +906,28 @@ function renderMetaContent(container, meta) {
           const inner = typeof subVal === 'string' ? tryParseJSON(subVal) : subVal;
           if (inner && typeof inner === 'object' && !Array.isArray(inner) && Object.keys(inner).length > 1) {
             for (const [dk, dv] of Object.entries(inner)) {
-              html += renderMetaRow(dk, typeof dv === 'object' ? JSON.stringify(dv) : String(dv));
+              const v = typeof dv === 'object' ? JSON.stringify(dv) : String(dv);
+              html += renderMetaRow(dk, v, allowCollapse);
+              allParts.push(`${dk}: ${v}`);
             }
             continue;
           }
-          html += renderMetaRow(subKey, JSON.stringify(subVal, null, 2));
+          const v = JSON.stringify(subVal, null, 2);
+          html += renderMetaRow(subKey, v, allowCollapse);
+          allParts.push(`${subKey}: ${v}`);
         } else {
-          html += renderMetaRow(subKey, String(subVal));
+          html += renderMetaRow(subKey, String(subVal), allowCollapse);
+          allParts.push(`${subKey}: ${subVal}`);
         }
       }
     } else {
-      html += renderMetaRow(key, str);
+      html += renderMetaRow(key, str, allowCollapse);
+      allParts.push(`${key}: ${str}`);
     }
   }
   container.innerHTML = html;
+  // Store for copy
+  currentFullMetaText = allParts.join('\n\n');
 }
 
 function tryParseJSON(str) {
@@ -792,18 +939,49 @@ function tryParseJSON(str) {
   return null;
 }
 
-function renderMetaRow(label, value) {
-  const MAX = 600;
-  let v = value, trunc = false;
-  if (v.length > MAX) { v = v.slice(0, MAX); trunc = true; }
-  return `<div class="meta-row">
-    <div class="meta-label">${escapeHtml(String(label))}</div>
-    <div class="meta-value">${escapeHtml(v)}${trunc ? '<span style="color:var(--text2)"> …</span>' : ''}</div>
-  </div>`;
-}
+/* ===== TOOLTIP ===== */
 
-function escapeHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function showMetaTooltip(cardEl, item) {
+  const tooltip = document.getElementById('metaTooltip');
+  const body = document.getElementById('metaTooltipBody');
+  const cacheKey = `${currentCollection}/${item.filename}`;
+
+  const rect = cardEl.getBoundingClientRect();
+  const tw = 440;
+  let left = rect.right + 12;
+  let top = rect.top;
+  if (left + tw > window.innerWidth - 16) {
+    left = rect.left - tw - 12;
+  }
+  if (left < 16) {
+    left = Math.max(16, rect.left + rect.width / 2 - tw / 2);
+    top = rect.bottom + 8;
+  }
+  const maxH = window.innerHeight * 0.75;
+  if (top + maxH > window.innerHeight - 16) {
+    top = window.innerHeight - maxH - 16;
+  }
+  if (top < 8) top = 8;
+
+  tooltip.style.left = left + 'px';
+  tooltip.style.top = top + 'px';
+  tooltip.classList.add('visible');
+
+  if (metaCache[cacheKey]) {
+    renderMetaContent(body, metaCache[cacheKey], true);
+  } else {
+    body.innerHTML = '<div class="meta-loading"><span class="mini-spinner"></span>加载中...</div>';
+    fetch(`${API}/api/meta/${currentCollection}/${item.filename}`)
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(data => {
+        metaCache[cacheKey] = data;
+        if (currentHoverCard === cardEl) renderMetaContent(body, data, true);
+      })
+      .catch(() => {
+        if (currentHoverCard === cardEl)
+          body.innerHTML = '<div class="meta-loading" style="color:var(--text2)">无元数据</div>';
+      });
+  }
 }
 
 function hideMetaTooltip() {
@@ -851,11 +1029,66 @@ document.getElementById('gallery').addEventListener('mouseout', e => {
   }, 100);
 });
 
+/* ===== LIGHTBOX METADATA ===== */
+
+function toggleLbMeta() {
+  const panel = document.getElementById('lbMetaPanel');
+  const btn = document.getElementById('lbMetaToggle');
+  lbMetaVisible = !lbMetaVisible;
+  panel.classList.toggle('hidden', !lbMetaVisible);
+  btn.classList.toggle('active', lbMetaVisible);
+  if (lbMetaVisible) {
+    loadLbMeta();
+  }
+}
+
+function loadLbMeta() {
+  const item = currentItems[lightboxIndex];
+  if (!item) return;
+  const body = document.getElementById('lbMetaBody');
+  const cacheKey = `${currentCollection}/${item.filename}`;
+
+  if (metaCache[cacheKey]) {
+    renderMetaContent(body, metaCache[cacheKey], false); // false = no collapse in lightbox
+  } else {
+    body.innerHTML = '<div class="meta-loading"><span class="mini-spinner"></span>加载元数据...</div>';
+    fetch(`${API}/api/meta/${currentCollection}/${item.filename}`)
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(data => {
+        metaCache[cacheKey] = data;
+        renderMetaContent(body, data, false);
+      })
+      .catch(() => {
+        body.innerHTML = '<div class="meta-loading" style="color:var(--text2)">无元数据</div>';
+      });
+  }
+}
+
+function copyAllMeta() {
+  if (!currentFullMetaText) return;
+  navigator.clipboard.writeText(currentFullMetaText).then(() => {
+    const btn = document.querySelector('.lb-meta-copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = '已复制 ✓';
+    btn.style.color = '#4ade80';
+    btn.style.borderColor = '#4ade80';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 1500);
+  }).catch(() => {});
+}
+
+/* ===== QQ SEARCH ===== */
+
 function quickSearchQQ(qq) {
   document.getElementById('searchInput').value = qq;
   doSearch();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+/* ===== INIT ===== */
 
 async function init() {
   try {
@@ -1034,6 +1267,8 @@ function goPage(p) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+/* ===== LIGHTBOX ===== */
+
 function openLightbox(index) {
   lightboxIndex = index;
   updateLightbox();
@@ -1044,6 +1279,10 @@ function openLightbox(index) {
 function closeLightbox() {
   document.getElementById('lightbox').classList.remove('open');
   document.body.style.overflow = '';
+  // Reset meta panel
+  lbMetaVisible = false;
+  document.getElementById('lbMetaPanel').classList.add('hidden');
+  document.getElementById('lbMetaToggle').classList.remove('active');
 }
 
 function navLightbox(dir) {
@@ -1065,6 +1304,14 @@ function updateLightbox() {
   document.getElementById('lbInfo').innerHTML = parts.join(' &nbsp;·&nbsp; ');
 
   document.getElementById('lbDownload').href = `${API}${item.url}${item.url.includes('?') ? '&' : '?'}raw=1`;
+
+  // Show/hide meta toggle based on collection
+  document.getElementById('lbMetaToggle').style.display = currentCollection === 'ai' ? '' : 'none';
+
+  // Refresh meta panel if visible
+  if (lbMetaVisible && currentCollection === 'ai') {
+    loadLbMeta();
+  }
 }
 
 document.addEventListener('keydown', e => {
@@ -1072,6 +1319,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeLightbox();
   if (e.key === 'ArrowLeft') navLightbox(-1);
   if (e.key === 'ArrowRight') navLightbox(1);
+  if (e.key === 'm' || e.key === 'M') toggleLbMeta();
 });
 
 document.getElementById('lightbox').addEventListener('click', e => {
