@@ -1288,15 +1288,64 @@ body::before {
   padding: 10px 14px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  max-height: 200px;
-  overflow-y: auto;
 }
-.inspect-result-text::-webkit-scrollbar { width: 4px; }
-.inspect-result-text::-webkit-scrollbar-track { background: transparent; }
-.inspect-result-text::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 .inspect-result-text.empty-text {
   color: var(--text2);
   font-style: italic;
+}
+.inspect-result-text.i-collapsed {
+  max-height: 120px;
+  overflow: hidden;
+  position: relative;
+}
+.inspect-result-text.i-collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  background: linear-gradient(transparent, var(--bg));
+  pointer-events: none;
+  border-radius: 0 0 8px 8px;
+}
+.i-expand-btn {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 3px 12px;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--accent2);
+  background: var(--accent-glow);
+  border: 1px solid rgba(124,106,239,0.25);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.i-expand-btn:hover { background: var(--accent); color: #fff; }
+
+/* Collapsible section (for EXIF, raw chunks) */
+.i-section-collapsible .i-section-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+.i-section-collapsible .i-section-toggle::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 4px;
+  transition: transform 0.2s;
+  font-size: 10px;
+}
+.i-section-collapsible.i-section-open .i-section-toggle::before {
+  transform: rotate(90deg);
+}
+.i-section-collapsible .i-section-content {
+  display: none;
+  margin-top: 6px;
+}
+.i-section-collapsible.i-section-open .i-section-content {
+  display: block;
+  animation: fadeIn 0.2s;
 }
 
 .inspect-params-grid {
@@ -2014,7 +2063,7 @@ function renderInspectResult(container, data, file, previewUrl) {
   if (data.prompt) {
     html += `<div class="inspect-result-section">
       <div class="inspect-result-section-title">Prompt</div>
-      <div class="inspect-result-text">${escapeHtml(data.prompt)}</div>
+      ${inspectTextBlock(data.prompt)}
     </div>`;
   }
 
@@ -2022,7 +2071,7 @@ function renderInspectResult(container, data, file, previewUrl) {
   if (data.negative_prompt) {
     html += `<div class="inspect-result-section">
       <div class="inspect-result-section-title">Negative Prompt</div>
-      <div class="inspect-result-text">${escapeHtml(data.negative_prompt)}</div>
+      ${inspectTextBlock(data.negative_prompt)}
     </div>`;
   }
 
@@ -2045,7 +2094,7 @@ function renderInspectResult(container, data, file, previewUrl) {
       // Complex nested (ComfyUI workflow etc)
       html += `<div class="inspect-result-section">
         <div class="inspect-result-section-title">Workflow / 参数</div>
-        <div class="inspect-result-text" style="max-height:300px">${escapeHtml(JSON.stringify(data.params_dict, null, 2))}</div>
+        ${inspectTextBlock(JSON.stringify(data.params_dict, null, 2))}
       </div>`;
     }
   }
@@ -2054,7 +2103,7 @@ function renderInspectResult(container, data, file, previewUrl) {
   if (data.params && !data.params_dict) {
     html += `<div class="inspect-result-section">
       <div class="inspect-result-section-title">参数</div>
-      <div class="inspect-result-text">${escapeHtml(data.params)}</div>
+      ${inspectTextBlock(data.params)}
     </div>`;
   }
 
@@ -2062,7 +2111,7 @@ function renderInspectResult(container, data, file, previewUrl) {
   if (data.stealth_pnginfo) {
     html += `<div class="inspect-result-section">
       <div class="inspect-result-section-title">Stealth PNGInfo (NovelAI)</div>
-      <div class="inspect-result-text" style="max-height:200px">${escapeHtml(JSON.stringify(data.stealth_pnginfo, null, 2))}</div>
+      ${inspectTextBlock(JSON.stringify(data.stealth_pnginfo, null, 2))}
     </div>`;
   }
 
@@ -2072,10 +2121,9 @@ function renderInspectResult(container, data, file, previewUrl) {
       <div class="inspect-result-section-title">原始文本块 (${data.raw_metadata.length})</div>`;
     for (const chunk of data.raw_metadata) {
       const text = chunk.text || '';
-      const display = text.length > 500 ? text.slice(0, 500) + '...' : text;
       html += `<div style="margin-bottom:8px">
         <div class="meta-label">${escapeHtml(chunk.keyword)}</div>
-        <div class="inspect-result-text">${escapeHtml(display)}</div>
+        ${inspectTextBlock(text)}
       </div>`;
     }
     html += `</div>`;
@@ -2083,16 +2131,20 @@ function renderInspectResult(container, data, file, previewUrl) {
 
   // EXIF
   if (data.exif && Object.keys(data.exif).length > 0) {
+    const exifId = 'exif_' + Math.random().toString(36).slice(2, 9);
+    const exifCount = Object.keys(data.exif).length;
     html += `<div class="inspect-result-section">
-      <div class="inspect-result-section-title">EXIF 信息</div>
-      <div class="inspect-params-grid">`;
+      <div class="inspect-result-section-title">EXIF 信息 (${exifCount})</div>
+      <div class="inspect-params-grid i-collapsed" id="${exifId}" style="max-height:0;overflow:hidden;transition:max-height 0.3s;gap:8px">`;
     for (const [k, v] of Object.entries(data.exif)) {
       html += `<div class="inspect-param-chip">
         <div class="inspect-param-chip-key">${escapeHtml(k)}</div>
         <div class="inspect-param-chip-val">${escapeHtml(String(v))}</div>
       </div>`;
     }
-    html += `</div></div>`;
+    html += `</div>
+      <span class="i-expand-btn" onclick="toggleExifSection(this,'${exifId}')">展开 EXIF (${exifCount}项)</span>
+    </div>`;
   }
 
   // No data at all
@@ -2117,6 +2169,35 @@ function renderInspectResult(container, data, file, previewUrl) {
 
   html += `</div>`;
   container.innerHTML = html;
+}
+
+const INSPECT_COLLAPSE_LEN = 300;
+
+function inspectTextBlock(text, forceNoCollapse) {
+  const id = 'it_' + Math.random().toString(36).slice(2, 9);
+  const long = !forceNoCollapse && text.length > INSPECT_COLLAPSE_LEN;
+  return `<div class="inspect-result-text ${long ? 'i-collapsed' : ''}" id="${id}">${escapeHtml(text)}</div>
+    ${long ? `<span class="i-expand-btn" onclick="toggleInspectExpand(this,'${id}')">展开全部</span>` : ''}`;
+}
+
+function toggleInspectExpand(btn, id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const collapsed = el.classList.toggle('i-collapsed');
+  btn.textContent = collapsed ? '展开全部' : '收起';
+}
+
+function toggleExifSection(btn, id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.style.maxHeight === '0px' || el.style.maxHeight === '0') {
+    el.style.maxHeight = el.scrollHeight + 'px';
+    btn.textContent = '收起 EXIF';
+  } else {
+    el.style.maxHeight = '0';
+    const count = el.querySelectorAll('.inspect-param-chip').length;
+    btn.textContent = '展开 EXIF (' + count + '项)';
+  }
 }
 
 function clearInspectResult() {
