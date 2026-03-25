@@ -79,6 +79,11 @@ body::before {
   justify-content: center;
   font-size: 16px;
 }
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
 .stats-bar {
   display: flex;
   gap: 24px;
@@ -88,12 +93,37 @@ body::before {
 }
 .stat-item span { color: var(--accent2); font-weight: 500; }
 
+/* Inspector Button in Header */
+.inspect-header-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--accent-glow);
+  color: var(--accent2);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+.inspect-header-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(124,106,239,0.3);
+}
+.inspect-header-btn svg { flex-shrink: 0; }
+
 .tabs {
   max-width: 1400px;
   margin: 24px auto 0;
   padding: 0 32px;
   display: flex;
   gap: 8px;
+  align-items: center;
 }
 .tab {
   padding: 10px 20px;
@@ -123,6 +153,192 @@ body::before {
   font-family: var(--mono);
 }
 .tab.active .tab-count { background: rgba(124,106,239,0.2); }
+
+/* ===== Software Filter ===== */
+.filter-wrap {
+  position: relative;
+  margin-left: auto;
+}
+.filter-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text2);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  position: relative;
+}
+.filter-btn:hover { border-color: var(--accent); color: var(--text); }
+.filter-btn.active {
+  border-color: var(--accent);
+  color: var(--accent2);
+  background: var(--accent-glow);
+}
+.filter-btn .filter-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: none;
+}
+.filter-btn.active .filter-dot { display: block; }
+
+.filter-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 240px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+  z-index: 200;
+  overflow: hidden;
+  display: none;
+  animation: dropIn 0.15s ease;
+}
+.filter-dropdown.open { display: block; }
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.filter-dropdown-header {
+  padding: 10px 14px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--accent2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.filter-dropdown-header .filter-reset {
+  font-size: 11px;
+  color: var(--text2);
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: all 0.2s;
+  font-family: var(--mono);
+}
+.filter-dropdown-header .filter-reset:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.filter-dropdown-body {
+  padding: 6px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+.filter-dropdown-body::-webkit-scrollbar { width: 4px; }
+.filter-dropdown-body::-webkit-scrollbar-track { background: transparent; }
+.filter-dropdown-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 13px;
+  gap: 8px;
+}
+.filter-item:hover { background: var(--bg3); }
+.filter-item.selected {
+  background: var(--accent-glow);
+  color: var(--accent2);
+}
+.filter-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.filter-item-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.filter-item-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.filter-item-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text2);
+  flex-shrink: 0;
+  background: var(--bg);
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+.filter-item.selected .filter-item-count {
+  background: rgba(124,106,239,0.2);
+  color: var(--accent2);
+}
+.filter-loading {
+  text-align: center;
+  padding: 16px;
+  font-size: 12px;
+  color: var(--text2);
+  font-family: var(--mono);
+}
+
+/* Active filter hint below tabs */
+.filter-active-hint {
+  max-width: 1400px;
+  margin: 10px auto 0;
+  padding: 0 32px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text2);
+  font-family: var(--mono);
+}
+.filter-active-hint.visible { display: flex; }
+.filter-active-hint .filter-hint-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.filter-active-hint .filter-hint-clear {
+  font-size: 11px;
+  color: var(--text2);
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  transition: all 0.2s;
+  font-family: var(--mono);
+}
+.filter-active-hint .filter-hint-clear:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
 
 .gallery-wrap {
   max-width: 1400px;
@@ -844,6 +1060,324 @@ body::before {
 @keyframes blink {
   50% { opacity: 0; }
 }
+
+/* ===== Inspector Modal ===== */
+.inspect-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s;
+}
+.inspect-modal-backdrop.open { display: flex; }
+
+.inspect-modal {
+  width: 680px;
+  max-width: 94vw;
+  max-height: 90vh;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 40px rgba(124,106,239,0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalIn 0.25s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.inspect-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.inspect-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.inspect-modal-title-icon {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, var(--accent), #60a5fa);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+.inspect-modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text2);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.inspect-modal-close:hover { border-color: var(--danger); color: var(--danger); }
+
+.inspect-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  min-height: 0;
+}
+.inspect-modal-body::-webkit-scrollbar { width: 5px; }
+.inspect-modal-body::-webkit-scrollbar-track { background: transparent; }
+.inspect-modal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Drop Zone */
+.inspect-dropzone {
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+}
+.inspect-dropzone:hover,
+.inspect-dropzone.dragover {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+.inspect-dropzone.dragover {
+  box-shadow: inset 0 0 30px rgba(124,106,239,0.1);
+}
+.inspect-dropzone-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+.inspect-dropzone-text {
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.inspect-dropzone-hint {
+  font-size: 12px;
+  color: var(--text2);
+  font-family: var(--mono);
+}
+.inspect-dropzone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Inspect result */
+.inspect-result {
+  margin-top: 20px;
+  animation: fadeIn 0.3s;
+}
+.inspect-result-file {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+.inspect-result-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--bg);
+  flex-shrink: 0;
+}
+.inspect-result-fileinfo {
+  flex: 1;
+  min-width: 0;
+}
+.inspect-result-filename {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+.inspect-result-filemeta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text2);
+}
+.inspect-result-filemeta span { color: var(--accent2); }
+.inspect-result-source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--mono);
+  flex-shrink: 0;
+}
+.inspect-result-clear {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text2);
+  font-size: 11px;
+  font-family: var(--mono);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.inspect-result-clear:hover { border-color: var(--danger); color: var(--danger); }
+
+.inspect-result-section {
+  margin-bottom: 14px;
+}
+.inspect-result-section-title {
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--accent2);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.inspect-result-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.inspect-result-text {
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--text);
+  line-height: 1.7;
+  word-break: break-all;
+  white-space: pre-wrap;
+  background: var(--bg);
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  max-height: 200px;
+  overflow-y: auto;
+}
+.inspect-result-text::-webkit-scrollbar { width: 4px; }
+.inspect-result-text::-webkit-scrollbar-track { background: transparent; }
+.inspect-result-text::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.inspect-result-text.empty-text {
+  color: var(--text2);
+  font-style: italic;
+}
+
+.inspect-params-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+.inspect-param-chip {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: var(--mono);
+}
+.inspect-param-chip-key {
+  font-size: 9px;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 2px;
+}
+.inspect-param-chip-val {
+  font-size: 12px;
+  color: var(--text);
+  word-break: break-all;
+}
+
+.inspect-copy-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.inspect-copy-btn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-size: 12px;
+  font-family: var(--mono);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.inspect-copy-btn:hover { border-color: var(--accent); color: var(--accent2); }
+
+.inspect-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 0;
+}
+.inspect-loading .spinner {
+  width: 28px;
+  height: 28px;
+}
+.inspect-loading-text {
+  font-size: 13px;
+  color: var(--text2);
+  font-family: var(--mono);
+}
+
+.inspect-error {
+  padding: 16px;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 8px;
+  color: #f87171;
+  font-size: 13px;
+  font-family: var(--mono);
+  text-align: center;
+  margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .inspect-header-btn span { display: none; }
+  .inspect-header-btn { padding: 8px 10px; }
+}
 </style>
 </head>
 <body>
@@ -866,11 +1400,28 @@ body::before {
       <div class="logo-icon">AI</div>
       AI 图鉴
     </div>
-    <div class="stats-bar" id="statsBar"></div>
+    <div class="header-right">
+      <div class="stats-bar" id="statsBar"></div>
+      <button class="inspect-header-btn" onclick="openInspectModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <span>原图数据读取</span>
+      </button>
+    </div>
   </div>
 </div>
 
 <div class="tabs" id="tabs"></div>
+
+<div class="filter-active-hint" id="filterActiveHint">
+  筛选中：<span class="filter-hint-tag" id="filterHintTag"></span>
+  <button class="filter-hint-clear" onclick="clearSoftwareFilter()">✕ 清除筛选</button>
+</div>
 
 <div class="search-bar" id="searchBar">
   <div class="search-inner">
@@ -923,6 +1474,28 @@ body::before {
   </div>
 </div>
 
+<!-- ===== Inspector Modal ===== -->
+<div class="inspect-modal-backdrop" id="inspectModalBackdrop">
+  <div class="inspect-modal" id="inspectModal">
+    <div class="inspect-modal-header">
+      <div class="inspect-modal-title">
+        <div class="inspect-modal-title-icon">🔬</div>
+        原图数据读取
+      </div>
+      <button class="inspect-modal-close" onclick="closeInspectModal()">×</button>
+    </div>
+    <div class="inspect-modal-body" id="inspectModalBody">
+      <div class="inspect-dropzone" id="inspectDropzone">
+        <input type="file" id="inspectFileInput" accept="image/png,image/jpeg,image/webp,image/avif,.png,.jpg,.jpeg,.webp,.avif" />
+        <div class="inspect-dropzone-icon">📁</div>
+        <div class="inspect-dropzone-text">拖拽图片到这里，或点击选择文件</div>
+        <div class="inspect-dropzone-hint">支持 PNG · JPEG · WebP · AVIF（最大 100MB）</div>
+      </div>
+      <div id="inspectResultArea"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = 'https://uqililh--ai-gallery-serve.modal.run';
 let currentCollection = 'ai';
@@ -938,6 +1511,27 @@ let searchQQ = '';
 let lbMetaVisible = false;
 let currentFullMetaText = '';
 
+/* ===== SOFTWARE FILTER STATE ===== */
+let softwareFilter = '';
+let softwareList = [];
+let softwareListLoaded = false;
+let filterDropdownOpen = false;
+
+const SW_COLORS = {
+  'novelai':  { bg: 'rgba(239,68,68,0.15)', color: '#f87171', dot: '#f87171' },
+  'comfyui':  { bg: 'rgba(34,197,94,0.15)',  color: '#4ade80', dot: '#4ade80' },
+  'webui':    { bg: 'rgba(59,130,246,0.15)',  color: '#60a5fa', dot: '#60a5fa' },
+  'unknown':  { bg: 'rgba(136,136,160,0.15)', color: '#8888a0', dot: '#8888a0' },
+};
+
+function getSwStyle(name) {
+  const lower = name.toLowerCase();
+  for (const [key, val] of Object.entries(SW_COLORS)) {
+    if (lower.includes(key)) return val;
+  }
+  return { bg: 'rgba(167,139,250,0.15)', color: '#a78bfa', dot: '#a78bfa' };
+}
+
 /* ===== BOOT LOG SYSTEM ===== */
 
 const bootLog = {
@@ -951,11 +1545,9 @@ const bootLog = {
     const line = document.createElement('div');
     line.className = 'lo-log-line';
     line.innerHTML = `<span class="lo-log-time">[${this._ts()}]</span><span class="lo-log-msg ${cls}">${msg}</span>`;
-    // Remove previous cursor
     const prev = this.el.querySelector('.lo-log-cursor');
     if (prev) prev.remove();
     this.el.appendChild(line);
-    // Add blinking cursor to latest line
     const cursor = document.createElement('span');
     cursor.className = 'lo-log-cursor';
     line.querySelector('.lo-log-msg').appendChild(cursor);
@@ -967,7 +1559,7 @@ const bootLog = {
   }
 };
 
-/* ===== METADATA RENDERING (NO TRUNCATION) ===== */
+/* ===== METADATA RENDERING ===== */
 
 const COLLAPSE_THRESHOLD = 400;
 
@@ -1191,6 +1783,376 @@ function quickSearchQQ(qq) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+/* ===== SOFTWARE FILTER ===== */
+
+function toggleFilterDropdown() {
+  const dropdown = document.getElementById('filterDropdown');
+  filterDropdownOpen = !filterDropdownOpen;
+  dropdown.classList.toggle('open', filterDropdownOpen);
+  if (filterDropdownOpen && !softwareListLoaded) {
+    loadSoftwareList();
+  }
+}
+
+function closeFilterDropdown() {
+  filterDropdownOpen = false;
+  const dropdown = document.getElementById('filterDropdown');
+  if (dropdown) dropdown.classList.remove('open');
+}
+
+async function loadSoftwareList() {
+  const body = document.getElementById('filterDropdownBody');
+  body.innerHTML = '<div class="filter-loading">加载中...</div>';
+  try {
+    const res = await fetch(`${API}/api/software-list/${currentCollection}`);
+    const data = await res.json();
+    softwareList = data.software_list || [];
+    softwareListLoaded = true;
+    renderFilterItems();
+  } catch (e) {
+    body.innerHTML = '<div class="filter-loading" style="color:#f87171">加载失败</div>';
+  }
+}
+
+function renderFilterItems() {
+  const body = document.getElementById('filterDropdownBody');
+  if (softwareList.length === 0) {
+    body.innerHTML = '<div class="filter-loading">无软件数据</div>';
+    return;
+  }
+  body.innerHTML = softwareList.map(sw => {
+    const style = getSwStyle(sw.name);
+    const isSelected = softwareFilter === sw.name;
+    return `<div class="filter-item ${isSelected ? 'selected' : ''}" onclick="selectSoftwareFilter('${escapeHtml(sw.name)}')">
+      <div class="filter-item-left">
+        <span class="filter-item-dot" style="background:${style.dot}"></span>
+        <span class="filter-item-name">${escapeHtml(sw.name)}</span>
+      </div>
+      <span class="filter-item-count">${sw.count}</span>
+    </div>`;
+  }).join('');
+}
+
+function selectSoftwareFilter(name) {
+  if (softwareFilter === name) {
+    softwareFilter = '';
+  } else {
+    softwareFilter = name;
+  }
+  currentPage = 1;
+  renderFilterItems();
+  updateFilterBtnState();
+  updateFilterHint();
+  closeFilterDropdown();
+  loadImages();
+}
+
+function clearSoftwareFilter() {
+  softwareFilter = '';
+  currentPage = 1;
+  renderFilterItems();
+  updateFilterBtnState();
+  updateFilterHint();
+  loadImages();
+}
+
+function updateFilterBtnState() {
+  const btn = document.getElementById('filterBtn');
+  if (btn) {
+    btn.classList.toggle('active', !!softwareFilter);
+  }
+}
+
+function updateFilterHint() {
+  const hint = document.getElementById('filterActiveHint');
+  const tag = document.getElementById('filterHintTag');
+  if (softwareFilter) {
+    const style = getSwStyle(softwareFilter);
+    tag.style.background = style.bg;
+    tag.style.color = style.color;
+    tag.textContent = softwareFilter;
+    hint.classList.add('visible');
+  } else {
+    hint.classList.remove('visible');
+  }
+}
+
+document.addEventListener('click', e => {
+  if (!filterDropdownOpen) return;
+  const wrap = document.getElementById('filterWrap');
+  if (wrap && !wrap.contains(e.target)) {
+    closeFilterDropdown();
+  }
+});
+
+/* ===== INSPECTOR MODAL ===== */
+
+let inspectCurrentData = null;
+
+function openInspectModal() {
+  document.getElementById('inspectModalBackdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeInspectModal() {
+  document.getElementById('inspectModalBackdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close on backdrop click
+document.getElementById('inspectModalBackdrop').addEventListener('click', e => {
+  if (e.target === document.getElementById('inspectModalBackdrop')) {
+    closeInspectModal();
+  }
+});
+
+// Close on Escape (only if lightbox isn't open)
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('inspectModalBackdrop').classList.contains('open')
+      && !document.getElementById('lightbox').classList.contains('open')) {
+    closeInspectModal();
+  }
+});
+
+// Drag & Drop
+const dropzone = document.getElementById('inspectDropzone');
+const fileInput = document.getElementById('inspectFileInput');
+
+dropzone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropzone.classList.add('dragover');
+});
+dropzone.addEventListener('dragleave', e => {
+  e.preventDefault();
+  dropzone.classList.remove('dragover');
+});
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('dragover');
+  const files = e.dataTransfer.files;
+  if (files.length > 0) {
+    handleInspectFile(files[0]);
+  }
+});
+
+fileInput.addEventListener('change', e => {
+  if (e.target.files.length > 0) {
+    handleInspectFile(e.target.files[0]);
+  }
+});
+
+function handleInspectFile(file) {
+  const resultArea = document.getElementById('inspectResultArea');
+  const maxSize = 100 * 1024 * 1024;
+
+  if (file.size > maxSize) {
+    resultArea.innerHTML = '<div class="inspect-error">文件过大，最大支持 100MB</div>';
+    return;
+  }
+
+  const validTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/avif'];
+  const ext = file.name.split('.').pop().toLowerCase();
+  const validExts = ['png', 'jpg', 'jpeg', 'webp', 'avif'];
+  if (!validTypes.includes(file.type) && !validExts.includes(ext)) {
+    resultArea.innerHTML = '<div class="inspect-error">不支持的文件格式，请上传 PNG/JPEG/WebP/AVIF 图片</div>';
+    return;
+  }
+
+  // Show loading
+  resultArea.innerHTML = `
+    <div class="inspect-loading">
+      <div class="spinner"></div>
+      <div class="inspect-loading-text">正在解析图片元数据...</div>
+    </div>`;
+
+  // Create preview URL
+  const previewUrl = URL.createObjectURL(file);
+
+  // Upload to API
+  const formData = new FormData();
+  formData.append('file', file);
+
+  fetch(`${API}/api/inspect`, {
+    method: 'POST',
+    body: formData,
+  })
+    .then(r => {
+      if (!r.ok) return r.json().then(d => { throw new Error(d.detail || r.status); });
+      return r.json();
+    })
+    .then(data => {
+      inspectCurrentData = data;
+      renderInspectResult(resultArea, data, file, previewUrl);
+    })
+    .catch(err => {
+      resultArea.innerHTML = `<div class="inspect-error">解析失败：${escapeHtml(err.message)}</div>`;
+    });
+}
+
+function renderInspectResult(container, data, file, previewUrl) {
+  const sourceStyle = getSwStyle(data.metadata_source);
+  const fileSize = data.filesize > 1024 * 1024
+    ? (data.filesize / 1024 / 1024).toFixed(1) + ' MB'
+    : (data.filesize / 1024).toFixed(1) + ' KB';
+
+  let html = `<div class="inspect-result">`;
+
+  // File info bar
+  html += `<div class="inspect-result-file">
+    <img class="inspect-result-thumb" src="${previewUrl}" alt="">
+    <div class="inspect-result-fileinfo">
+      <div class="inspect-result-filename">${escapeHtml(data.filename)}</div>
+      <div class="inspect-result-filemeta">
+        <span>${data.image_type.toUpperCase()}</span> · <span>${fileSize}</span>
+      </div>
+    </div>
+    <span class="inspect-result-source-badge" style="background:${sourceStyle.bg};color:${sourceStyle.color}">${escapeHtml(data.metadata_source)}</span>
+    <button class="inspect-result-clear" onclick="clearInspectResult()">✕ 清除</button>
+  </div>`;
+
+  // Prompt
+  if (data.prompt) {
+    html += `<div class="inspect-result-section">
+      <div class="inspect-result-section-title">Prompt</div>
+      <div class="inspect-result-text">${escapeHtml(data.prompt)}</div>
+    </div>`;
+  }
+
+  // Negative Prompt
+  if (data.negative_prompt) {
+    html += `<div class="inspect-result-section">
+      <div class="inspect-result-section-title">Negative Prompt</div>
+      <div class="inspect-result-text">${escapeHtml(data.negative_prompt)}</div>
+    </div>`;
+  }
+
+  // Params dict as chips
+  if (data.params_dict && Object.keys(data.params_dict).length > 0) {
+    // Check if it's a simple key-value (SD-WebUI style) or nested (ComfyUI)
+    const isSimple = Object.values(data.params_dict).every(v => typeof v !== 'object');
+    if (isSimple) {
+      html += `<div class="inspect-result-section">
+        <div class="inspect-result-section-title">生成参数</div>
+        <div class="inspect-params-grid">`;
+      for (const [k, v] of Object.entries(data.params_dict)) {
+        html += `<div class="inspect-param-chip">
+          <div class="inspect-param-chip-key">${escapeHtml(k)}</div>
+          <div class="inspect-param-chip-val">${escapeHtml(String(v))}</div>
+        </div>`;
+      }
+      html += `</div></div>`;
+    } else {
+      // Complex nested (ComfyUI workflow etc)
+      html += `<div class="inspect-result-section">
+        <div class="inspect-result-section-title">Workflow / 参数</div>
+        <div class="inspect-result-text" style="max-height:300px">${escapeHtml(JSON.stringify(data.params_dict, null, 2))}</div>
+      </div>`;
+    }
+  }
+
+  // Params string fallback
+  if (data.params && !data.params_dict) {
+    html += `<div class="inspect-result-section">
+      <div class="inspect-result-section-title">参数</div>
+      <div class="inspect-result-text">${escapeHtml(data.params)}</div>
+    </div>`;
+  }
+
+  // Stealth PNGInfo
+  if (data.stealth_pnginfo) {
+    html += `<div class="inspect-result-section">
+      <div class="inspect-result-section-title">Stealth PNGInfo (NovelAI)</div>
+      <div class="inspect-result-text" style="max-height:200px">${escapeHtml(JSON.stringify(data.stealth_pnginfo, null, 2))}</div>
+    </div>`;
+  }
+
+  // Raw metadata chunks
+  if (data.raw_metadata && data.raw_metadata.length > 0) {
+    html += `<div class="inspect-result-section">
+      <div class="inspect-result-section-title">原始文本块 (${data.raw_metadata.length})</div>`;
+    for (const chunk of data.raw_metadata) {
+      const text = chunk.text || '';
+      const display = text.length > 500 ? text.slice(0, 500) + '...' : text;
+      html += `<div style="margin-bottom:8px">
+        <div class="meta-label">${escapeHtml(chunk.keyword)}</div>
+        <div class="inspect-result-text">${escapeHtml(display)}</div>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+
+  // EXIF
+  if (data.exif && Object.keys(data.exif).length > 0) {
+    html += `<div class="inspect-result-section">
+      <div class="inspect-result-section-title">EXIF 信息</div>
+      <div class="inspect-params-grid">`;
+    for (const [k, v] of Object.entries(data.exif)) {
+      html += `<div class="inspect-param-chip">
+        <div class="inspect-param-chip-key">${escapeHtml(k)}</div>
+        <div class="inspect-param-chip-val">${escapeHtml(String(v))}</div>
+      </div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  // No data at all
+  if (!data.prompt && !data.negative_prompt && (!data.params_dict || Object.keys(data.params_dict).length === 0)
+      && (!data.raw_metadata || data.raw_metadata.length === 0) && !data.stealth_pnginfo
+      && (!data.exif || Object.keys(data.exif).length === 0)) {
+    html += `<div class="inspect-result-section">
+      <div class="inspect-result-text empty-text">未能从该图片中提取到任何生成参数或元数据</div>
+    </div>`;
+  }
+
+  // Copy buttons
+  html += `<div class="inspect-copy-row">`;
+  if (data.prompt) {
+    html += `<button class="inspect-copy-btn" onclick="copyInspectField('prompt')">复制 Prompt</button>`;
+  }
+  if (data.negative_prompt) {
+    html += `<button class="inspect-copy-btn" onclick="copyInspectField('negative_prompt')">复制 Negative</button>`;
+  }
+  html += `<button class="inspect-copy-btn" onclick="copyInspectAll()">复制全部 JSON</button>`;
+  html += `</div>`;
+
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+function clearInspectResult() {
+  const resultArea = document.getElementById('inspectResultArea');
+  resultArea.innerHTML = '';
+  inspectCurrentData = null;
+  // Reset file input
+  document.getElementById('inspectFileInput').value = '';
+}
+
+function copyInspectField(field) {
+  if (!inspectCurrentData || !inspectCurrentData[field]) return;
+  navigator.clipboard.writeText(inspectCurrentData[field]).then(() => {
+    showCopyFeedback(event.target);
+  }).catch(() => {});
+}
+
+function copyInspectAll() {
+  if (!inspectCurrentData) return;
+  navigator.clipboard.writeText(JSON.stringify(inspectCurrentData, null, 2)).then(() => {
+    showCopyFeedback(event.target);
+  }).catch(() => {});
+}
+
+function showCopyFeedback(btn) {
+  const orig = btn.textContent;
+  btn.textContent = '已复制 ✓';
+  btn.style.color = '#4ade80';
+  btn.style.borderColor = '#4ade80';
+  setTimeout(() => {
+    btn.textContent = orig;
+    btn.style.color = '';
+    btn.style.borderColor = '';
+  }, 1200);
+}
+
 /* ===== INIT WITH BOOT LOG ===== */
 
 async function init() {
@@ -1250,7 +2212,6 @@ async function init() {
         <div class="error-detail">${e.name}: ${e.message}<br>API: ${API}/api/collections</div>
       </div>`;
 
-    // Still hide overlay after a moment so user can see the error
     await sleep(2000);
     document.getElementById('loadingOverlay').classList.add('hidden');
   }
@@ -1275,22 +2236,49 @@ async function loadStats() {
 
 function renderTabs() {
   const container = document.getElementById('tabs');
-  container.innerHTML = collections.map(c => `
+  let tabsHtml = collections.map(c => `
     <div class="tab ${c.key === currentCollection ? 'active' : ''}"
          onclick="switchTab('${c.key}')">
       ${c.label}
       <span class="tab-count">${c.count}</span>
     </div>
   `).join('');
+
+  if (currentCollection === 'ai') {
+    tabsHtml += `
+      <div class="filter-wrap" id="filterWrap">
+        <button class="filter-btn ${softwareFilter ? 'active' : ''}" id="filterBtn" onclick="toggleFilterDropdown()" title="按软件筛选">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+          </svg>
+          <span class="filter-dot"></span>
+        </button>
+        <div class="filter-dropdown" id="filterDropdown">
+          <div class="filter-dropdown-header">
+            <span>按软件筛选</span>
+            <button class="filter-reset" onclick="clearSoftwareFilter()">重置</button>
+          </div>
+          <div class="filter-dropdown-body" id="filterDropdownBody">
+            <div class="filter-loading">点击加载...</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  container.innerHTML = tabsHtml;
 }
 
 function switchTab(key) {
   currentCollection = key;
   currentPage = 1;
   searchQQ = '';
+  softwareFilter = '';
+  softwareListLoaded = false;
+  softwareList = [];
   document.getElementById('searchInput').value = '';
   document.getElementById('searchClearBtn').style.display = 'none';
   document.getElementById('searchHint').style.display = 'none';
+  updateFilterHint();
   renderTabs();
   loadImages();
 }
@@ -1330,6 +2318,7 @@ async function loadImages() {
   try {
     let url = `${API}/api/images/${currentCollection}?page=${currentPage}`;
     if (searchQQ) url += `&qq_sender=${encodeURIComponent(searchQQ)}`;
+    if (softwareFilter) url += `&software=${encodeURIComponent(softwareFilter)}`;
     const res = await fetch(url);
     const data = await res.json();
     totalPages = data.total_pages;
@@ -1464,6 +2453,7 @@ function updateLightbox() {
 }
 
 document.addEventListener('keydown', e => {
+  if (document.getElementById('inspectModalBackdrop').classList.contains('open')) return;
   if (!document.getElementById('lightbox').classList.contains('open')) return;
   if (e.key === 'Escape') closeLightbox();
   if (e.key === 'ArrowLeft') navLightbox(-1);
