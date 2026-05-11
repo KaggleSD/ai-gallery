@@ -1427,6 +1427,208 @@ body::before {
   .inspect-header-btn span { display: none; }
   .inspect-header-btn { padding: 8px 10px; }
 }
+
+/* ===== Card Action Buttons ===== */
+.card-actions {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px 12px;
+}
+.card-action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+}
+.card-action-btn:hover { border-color: var(--accent); color: var(--accent2); background: var(--accent-glow); }
+.card-action-btn.report-btn:hover { border-color: var(--danger); color: #f87171; background: rgba(239,68,68,0.08); }
+.card-action-btn svg { flex-shrink: 0; }
+
+/* ===== Report Modal ===== */
+.report-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s;
+}
+.report-modal-backdrop.open { display: flex; }
+.report-modal {
+  width: 480px;
+  max-width: 94vw;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  overflow: hidden;
+  animation: modalIn 0.25s ease;
+}
+.report-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+}
+.report-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.report-modal-title-icon {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, var(--danger), #f97316);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+.report-modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text2);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.report-modal-close:hover { border-color: var(--danger); color: var(--danger); }
+.report-modal-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.report-img-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.report-img-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: var(--bg);
+  flex-shrink: 0;
+}
+.report-img-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text2);
+  word-break: break-all;
+}
+.report-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.report-reasons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.report-reason-btn {
+  padding: 8px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.report-reason-btn:hover { border-color: var(--danger); color: #f87171; background: rgba(239,68,68,0.06); }
+.report-reason-btn.selected { border-color: var(--danger); color: #f87171; background: rgba(239,68,68,0.1); }
+.report-textarea {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: var(--font);
+  resize: vertical;
+  min-height: 72px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.report-textarea:focus { border-color: var(--accent); }
+.report-textarea::placeholder { color: var(--text2); }
+.report-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 20px 20px;
+}
+.report-cancel-btn {
+  padding: 8px 18px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.report-cancel-btn:hover { border-color: var(--text2); color: var(--text); }
+.report-submit-btn {
+  padding: 8px 20px;
+  border-radius: 7px;
+  border: 1px solid var(--danger);
+  background: rgba(239,68,68,0.1);
+  color: #f87171;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.report-submit-btn:hover { background: var(--danger); color: #fff; }
+.report-submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.report-success {
+  padding: 28px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  animation: fadeIn 0.3s;
+}
+.report-success-icon { font-size: 36px; }
+.report-success-title { font-size: 15px; font-weight: 600; color: var(--text); }
+.report-success-sub { font-size: 13px; color: var(--text2); }
 </style>
 </head>
 <body>
@@ -1519,6 +1721,45 @@ body::before {
         <button class="lb-meta-copy-btn" onclick="copyAllMeta()">复制全部</button>
       </div>
       <div class="lb-meta-body" id="lbMetaBody"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Report Modal ===== -->
+<div class="report-modal-backdrop" id="reportModalBackdrop">
+  <div class="report-modal">
+    <div class="report-modal-header">
+      <div class="report-modal-title">
+        <div class="report-modal-title-icon">🚨</div>
+        举报图片
+      </div>
+      <button class="report-modal-close" onclick="closeReportModal()">×</button>
+    </div>
+    <div id="reportModalContent">
+      <div class="report-modal-body">
+        <div class="report-img-preview">
+          <img class="report-img-thumb" id="reportThumb" src="" alt="">
+          <div class="report-img-name" id="reportFilename"></div>
+        </div>
+        <div>
+          <div class="report-label">举报原因</div>
+          <div class="report-reasons" id="reportReasons">
+            <button class="report-reason-btn" onclick="selectReason(this)">🔞 违禁内容</button>
+            <button class="report-reason-btn" onclick="selectReason(this)">👤 侵犯隐私</button>
+            <button class="report-reason-btn" onclick="selectReason(this)">©️ 版权问题</button>
+            <button class="report-reason-btn" onclick="selectReason(this)">🗑️ 垃圾/广告</button>
+            <button class="report-reason-btn" onclick="selectReason(this)">⚠️ 其他问题</button>
+          </div>
+        </div>
+        <div>
+          <div class="report-label">补充说明（选填）</div>
+          <textarea class="report-textarea" id="reportNote" placeholder="请描述具体问题..."></textarea>
+        </div>
+      </div>
+      <div class="report-modal-footer">
+        <button class="report-cancel-btn" onclick="closeReportModal()">取消</button>
+        <button class="report-submit-btn" id="reportSubmitBtn" onclick="submitReport()" disabled>提交举报</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2430,6 +2671,16 @@ async function loadImages() {
             ${item.group_name ? `<span style="font-size:10px;color:var(--text2)">${item.group_name}</span>` : ''}
           </div>` : ''}
         </div>
+        <div class="card-actions" onclick="event.stopPropagation()">
+          <button class="card-action-btn" onclick="viewCardInfo(${i})" title="查看详情">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            查看信息
+          </button>
+          <button class="card-action-btn report-btn" onclick="openReportModal(${i})" title="举报此图">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            举报
+          </button>
+        </div>
       </div>`;
     }).join('');
 
@@ -2544,6 +2795,127 @@ document.addEventListener('keydown', e => {
 
 document.getElementById('lightbox').addEventListener('click', e => {
   if (e.target === document.getElementById('lightbox')) closeLightbox();
+});
+
+/* ===== CARD ACTION: 查看信息 ===== */
+
+function viewCardInfo(index) {
+  openLightbox(index);
+  // Auto-show meta panel for AI collection
+  if (currentCollection === 'ai' && !lbMetaVisible) {
+    setTimeout(toggleLbMeta, 80);
+  }
+}
+
+/* ===== REPORT MODAL ===== */
+
+let reportTargetIndex = null;
+
+function openReportModal(index) {
+  reportTargetIndex = index;
+  const item = currentItems[index];
+  document.getElementById('reportThumb').src = `${API}${item.thumb_url}`;
+  document.getElementById('reportFilename').textContent = item.filename;
+  document.getElementById('reportNote').value = '';
+  document.getElementById('reportSubmitBtn').disabled = true;
+  // Reset reason selection
+  document.querySelectorAll('.report-reason-btn').forEach(b => b.classList.remove('selected'));
+  // Show form content (in case success was shown before)
+  document.getElementById('reportModalContent').innerHTML = `
+    <div class="report-modal-body">
+      <div class="report-img-preview">
+        <img class="report-img-thumb" id="reportThumb" src="${API}${item.thumb_url}" alt="">
+        <div class="report-img-name" id="reportFilename">${escapeHtml(item.filename)}</div>
+      </div>
+      <div>
+        <div class="report-label">举报原因</div>
+        <div class="report-reasons" id="reportReasons">
+          <button class="report-reason-btn" onclick="selectReason(this)">🔞 违禁内容</button>
+          <button class="report-reason-btn" onclick="selectReason(this)">👤 侵犯隐私</button>
+          <button class="report-reason-btn" onclick="selectReason(this)">©️ 版权问题</button>
+          <button class="report-reason-btn" onclick="selectReason(this)">🗑️ 垃圾/广告</button>
+          <button class="report-reason-btn" onclick="selectReason(this)">⚠️ 其他问题</button>
+        </div>
+      </div>
+      <div>
+        <div class="report-label">补充说明（选填）</div>
+        <textarea class="report-textarea" id="reportNote" placeholder="请描述具体问题..."></textarea>
+      </div>
+    </div>
+    <div class="report-modal-footer">
+      <button class="report-cancel-btn" onclick="closeReportModal()">取消</button>
+      <button class="report-submit-btn" id="reportSubmitBtn" onclick="submitReport()" disabled>提交举报</button>
+    </div>`;
+  document.getElementById('reportModalBackdrop').classList.add('open');
+}
+
+function closeReportModal() {
+  document.getElementById('reportModalBackdrop').classList.remove('open');
+  reportTargetIndex = null;
+}
+
+function selectReason(btn) {
+  document.querySelectorAll('.report-reason-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('reportSubmitBtn').disabled = false;
+}
+
+function submitReport() {
+  const item = reportTargetIndex !== null ? currentItems[reportTargetIndex] : null;
+  if (!item) return;
+  const reason = document.querySelector('.report-reason-btn.selected')?.textContent?.trim() || '';
+  const note = document.getElementById('reportNote')?.value?.trim() || '';
+
+  // Disable button and show loading state
+  const submitBtn = document.getElementById('reportSubmitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = '提交中...';
+
+  fetch(`${API}/api/report`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      filename:   item.filename,
+      collection: currentCollection,
+      reason:     reason,
+      note:       note,
+      qq_sender:  item.qq_sender || '',
+    }),
+  })
+    .then(r => {
+      if (!r.ok) return r.json().then(d => { throw new Error(d.detail || r.status); });
+      return r.json();
+    })
+    .then(() => {
+      document.getElementById('reportModalContent').innerHTML = `
+        <div class="report-success">
+          <div class="report-success-icon">✅</div>
+          <div class="report-success-title">举报已提交</div>
+          <div class="report-success-sub">感谢您的反馈，我们将尽快处理。</div>
+        </div>`;
+      setTimeout(closeReportModal, 2200);
+    })
+    .catch(err => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '提交举报';
+      // Show inline error without closing modal
+      const errEl = document.getElementById('reportErrorMsg');
+      if (errEl) {
+        errEl.textContent = '提交失败：' + err.message;
+        errEl.style.display = '';
+      } else {
+        const footer = document.querySelector('.report-modal-footer');
+        const div = document.createElement('div');
+        div.id = 'reportErrorMsg';
+        div.style.cssText = 'font-size:12px;color:#f87171;padding:0 20px 10px;font-family:var(--mono)';
+        div.textContent = '提交失败：' + err.message;
+        footer.before(div);
+      }
+    });
+}
+
+document.getElementById('reportModalBackdrop').addEventListener('click', e => {
+  if (e.target === document.getElementById('reportModalBackdrop')) closeReportModal();
 });
 
 init();
