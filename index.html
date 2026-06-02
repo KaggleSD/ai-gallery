@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>原典AI 图鉴</title> NEW TEST 
+<title>原典AI 图鉴</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -1629,6 +1630,289 @@ body::before {
 .report-success-icon { font-size: 36px; }
 .report-success-title { font-size: 15px; font-weight: 600; color: var(--text); }
 .report-success-sub { font-size: 13px; color: var(--text2); }
+.report-error {
+  margin: 0 20px 20px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(239,68,68,0.2);
+  background: rgba(239,68,68,0.08);
+  color: #f87171;
+  font-size: 12px;
+  line-height: 1.6;
+  font-family: var(--mono);
+  word-break: break-all;
+}
+
+
+/* ===== First Visit Notice Modal ===== */
+.notice-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  background: rgba(0,0,0,0.72);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+.notice-modal-backdrop.open { display: flex; }
+.notice-modal {
+  width: 620px;
+  max-width: 94vw;
+  max-height: 88vh;
+  background: var(--bg2);
+  border: 1px solid var(--accent);
+  border-radius: 0;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.72), 0 0 0 1px rgba(124,106,239,0.12);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.notice-modal-header {
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(90deg, rgba(124,106,239,0.18), transparent), var(--bg3);
+}
+.notice-modal-header h1 {
+  font-size: 24px;
+  line-height: 1.35;
+  color: var(--text);
+  letter-spacing: -0.4px;
+}
+.notice-modal-body {
+  padding: 20px 22px 8px;
+  overflow-y: auto;
+  min-height: 0;
+}
+.notice-modal-body::-webkit-scrollbar { width: 5px; }
+.notice-modal-body::-webkit-scrollbar-track { background: transparent; }
+.notice-modal-body::-webkit-scrollbar-thumb { background: var(--border); }
+.notice-modal-body p,
+.notice-modal-body li {
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--text);
+}
+.notice-modal-body h2 {
+  margin: 18px 0 10px;
+  font-size: 17px;
+  color: var(--accent2);
+}
+.notice-modal-body h3 {
+  margin: 18px 0 6px;
+  font-size: 14px;
+  color: var(--text2);
+  font-family: var(--mono);
+  font-weight: 500;
+}
+.notice-modal-body ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.notice-email {
+  color: var(--accent2);
+  font-family: var(--mono);
+  word-break: break-all;
+}
+.notice-modal-footer {
+  padding: 16px 22px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  background: var(--bg2);
+}
+.notice-confirm-btn {
+  min-width: 160px;
+  padding: 10px 20px;
+  border-radius: 0;
+  border: 1px solid var(--accent);
+  background: var(--accent-glow);
+  color: var(--accent2);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.notice-confirm-btn:not(:disabled):hover {
+  background: var(--accent);
+  color: #fff;
+}
+.notice-confirm-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  border-color: var(--border);
+  color: var(--text2);
+  background: var(--bg3);
+}
+@media (max-width: 600px) {
+  .notice-modal-header { padding: 18px 18px 14px; }
+  .notice-modal-header h1 { font-size: 21px; }
+  .notice-modal-body { padding: 18px 18px 8px; }
+  .notice-modal-footer { padding: 14px 18px 18px; }
+  .notice-confirm-btn { width: 100%; }
+}
+
+/* ===== Terms Route ===== */
+body.terms-route .tabs,
+body.terms-route .filter-active-hint,
+body.terms-route .search-bar,
+body.terms-route .search-result-hint,
+body.terms-route .gallery-wrap,
+body.terms-route .meta-tooltip {
+  display: none !important;
+}
+.logo-link {
+  color: var(--text);
+  text-decoration: none;
+}
+.logo-link:hover { color: var(--accent2); }
+.site-footer .footer-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 4px;
+  font-size: 12px;
+  font-family: var(--mono);
+}
+.site-footer .footer-links a {
+  color: var(--accent2);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s;
+}
+.site-footer .footer-links a:hover {
+  color: var(--text);
+  border-bottom-color: var(--accent2);
+}
+.terms-page {
+  display: none;
+  max-width: 980px;
+  margin: 32px auto 48px;
+  padding: 0 32px 32px;
+  position: relative;
+  z-index: 1;
+}
+body.terms-route .terms-page { display: block; }
+.terms-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 18px 60px rgba(0,0,0,0.28);
+}
+.terms-hero {
+  padding: 28px 32px;
+  background:
+    radial-gradient(ellipse 90% 90% at 10% 0%, rgba(124,106,239,0.20), transparent 55%),
+    var(--bg2);
+  border-bottom: 1px solid var(--border);
+}
+.terms-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(124,106,239,0.25);
+  color: var(--accent2);
+  font-family: var(--mono);
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+.terms-hero h1 {
+  font-size: 28px;
+  line-height: 1.25;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+.terms-summary {
+  color: var(--text2);
+  line-height: 1.9;
+  font-size: 14px;
+  max-width: 820px;
+}
+.terms-body {
+  padding: 28px 32px 34px;
+}
+.terms-notice {
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(167,139,250,0.28);
+  background: rgba(124,106,239,0.08);
+  color: var(--text);
+  line-height: 1.8;
+  font-size: 13px;
+  margin-bottom: 22px;
+}
+.terms-section {
+  padding: 20px 0;
+  border-top: 1px solid var(--border);
+}
+.terms-section:first-of-type { border-top: none; padding-top: 0; }
+.terms-section h2 {
+  font-size: 17px;
+  color: var(--accent2);
+  margin-bottom: 10px;
+}
+.terms-section p,
+.terms-section li {
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.9;
+}
+.terms-section p + p { margin-top: 8px; }
+.terms-section ul {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.terms-section strong { color: #fff; }
+.terms-muted { color: var(--text2) !important; }
+.terms-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+.terms-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--accent-glow);
+  color: var(--accent2);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.terms-btn:hover { background: var(--accent); color: #fff; }
+.terms-btn.secondary {
+  border-color: var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+}
+.terms-btn.secondary:hover { border-color: var(--accent); color: var(--text); background: var(--bg2); }
+@media (max-width: 600px) {
+  .terms-page { padding: 0 16px 24px; margin-top: 20px; }
+  .terms-hero, .terms-body { padding: 22px 18px; }
+  .terms-hero h1 { font-size: 23px; }
+}
+
 </style>
 </head>
 <body>
@@ -1645,12 +1929,35 @@ body::before {
   </div>
 </div>
 
+<!-- ===== First Visit Notice Modal ===== -->
+<div class="notice-modal-backdrop" id="noticeModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="noticeTitle">
+  <div class="notice-modal">
+    <div class="notice-modal-header">
+      <h1 id="noticeTitle">欢迎使用原典AI图库（内测）！</h1>
+    </div>
+    <div class="notice-modal-body">
+      <p>本站旨在为AI绘画用户提供便捷的提示词参考。涵盖 Stable Diffusion WebUI、ComfyUI、NovelAI 等三大常见开源 AI 绘画程序。</p>
+
+      <h2>2026年6月3日 v0.4.alpha更新：</h2>
+      <ol>
+        <li>移除了所有 NSFW 图片。</li>
+        <li>新增用户条款与举报功能。由于站长无法对图片逐一排查，因此如果发现违规图片的话，第一时间举报哦，我看到后会处理。</li>
+      </ol>
+
+      <h3>反馈邮箱：<span class="notice-email">Nya@vip.qq.com</span></h3>
+    </div>
+    <div class="notice-modal-footer">
+      <button class="notice-confirm-btn" id="noticeConfirmBtn" type="button" disabled onclick="closeWelcomeNotice()">我已了解（5s）</button>
+    </div>
+  </div>
+</div>
+
 <div class="header">
   <div class="header-inner">
-    <div class="logo">
+    <a class="logo logo-link" href="./" onclick="navigateToGallery(event)" aria-label="返回原典AI图库首页">
       <div class="logo-icon">AI</div>
       AI 图鉴
-    </div>
+    </a>
     <div class="header-right">
       <div class="stats-bar" id="statsBar"></div>
       <button class="inspect-header-btn" onclick="openInspectModal()">
@@ -1694,8 +2001,119 @@ body::before {
   <div class="footer-inner">
     <div class="source-tag">📂 图片主要来源于解构原典群</div>
     <div class="dev-credit">Developed by <span>正在加载...</span></div>
+    <div class="footer-links">
+      <a href="#/terms" onclick="navigateToTerms(event)">用户条款</a>
+      <span>·</span>
+      <a href="./" onclick="navigateToGallery(event)">返回图库</a>
+    </div>
   </div>
 </footer>
+
+
+<main class="terms-page" id="termsPage" aria-labelledby="termsTitle">
+  <article class="terms-card">
+    <header class="terms-hero">
+      <div class="terms-kicker">Legal · User Terms</div>
+      <h1 id="termsTitle">原典AI图库用户条款</h1>
+      <p class="terms-summary">
+        欢迎使用原典AI图库。本站旨在为 AI 绘画用户提供便捷的提示词参考，涵盖 Stable Diffusion WebUI、ComfyUI、NovelAI 等常见开源 AI 绘画程序的图片展示、参数查看、提示词参考与原图数据读取功能。
+      </p>
+    </header>
+    <div class="terms-body">
+      <div class="terms-notice">
+        <strong>重要提示：</strong>你访问、浏览、下载、检索、上传图片进行元数据解析或使用本站其他功能，即表示你已阅读、理解并同意本条款。若你不同意本条款，请停止使用本站。本站为个人开发维护的参考型网站，并非生成式 AI 模型服务提供者、素材交易平台或版权确权机构。
+      </div>
+
+      <section class="terms-section">
+        <h2>一、本站定义与服务范围</h2>
+        <p><strong>原典AI图库</strong>是一个面向 AI 绘画用户的提示词与图片参数参考站点。本站可能提供图片浏览、缩略图展示、原图下载、QQ/来源信息检索、图片生成参数或 PNG Metadata 查看、图片元数据读取、按软件筛选、举报反馈等功能。</p>
+        <p>本站展示的信息主要用于学习、研究、灵感参考与技术交流。本站不承诺图片、提示词、参数、作者信息、群来源、软件识别结果或元数据完全准确、完整、可用或适合特定用途。</p>
+      </section>
+
+      <section class="terms-section">
+        <h2>二、用户资格与使用规则</h2>
+        <ul>
+          <li>你应当具备与使用本站相适应的民事行为能力；未成年人应在监护人同意和指导下使用本站。</li>
+          <li>你不得以攻击、爬虫压测、批量下载、反向工程、绕过限制、干扰后端接口、破坏安全措施等方式影响本站正常运行。</li>
+          <li>你不得冒用他人身份、提交虚假举报、恶意投诉、诱导本站处理合法内容，或利用本站从事违法违规、侵权、骚扰、诈骗、广告引流等行为。</li>
+          <li>你使用本站下载、复制、改编、转发图片或提示词时，应自行确认是否具备合法权利，并自行承担由此产生的责任。</li>
+        </ul>
+      </section>
+
+      <section class="terms-section">
+        <h2>三、内容来源、权利归属与授权限制</h2>
+        <p>本站展示的图片、提示词、生成参数、QQ 号、群名称、文件名、日期等信息，可能来源于公开交流、用户分享、群内资料整理、站点维护者上传或后端自动解析。除本站自有的页面设计、前端代码、排版与整理成果外，图片及其相关权利仍归原权利人或合法权利主体所有。</p>
+        <p>本站对相关图片的展示并不当然代表本站拥有其版权、肖像权、商标权、训练数据权利或其他权益，也不代表本站向用户授予商业使用、二次分发、再授权、模型训练、去水印或规避标识的权利。</p>
+        <p>如果你认为本站内容侵犯你的著作权、肖像权、隐私权、名誉权、商标权或其他合法权益，请按照本条款“权利通知与举报处理”提交材料。</p>
+      </section>
+
+      <section class="terms-section">
+        <h2>四、禁止内容与禁止用途</h2>
+        <p>用户不得利用本站制作、复制、发布、传播、上传、检索、下载、保存或协助传播法律法规禁止的信息，尤其包括但不限于：</p>
+        <ul>
+          <li>危害国家安全、泄露国家秘密、颠覆国家政权、破坏国家统一、损害国家荣誉和利益的内容；</li>
+          <li>煽动民族仇恨、民族歧视，破坏民族团结，破坏宗教政策，宣扬邪教、迷信、恐怖主义、极端主义的内容；</li>
+          <li>散布谣言，扰乱社会秩序，破坏社会稳定，宣扬淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪的内容；</li>
+          <li>侮辱、诽谤他人，侵害他人名誉、隐私、肖像、个人信息、商业秘密、知识产权或其他合法权益的内容；</li>
+          <li>涉及未成年人色情、性剥削、真实或疑似非自愿亲密影像、偷拍视频、开盒、人肉搜索、违法交易、恶意引流等内容；</li>
+          <li>恶意删除、篡改、伪造、隐匿 AI 生成合成内容标识，或帮助他人规避依法应当履行的标识义务的行为。</li>
+        </ul>
+      </section>
+
+      <section class="terms-section">
+        <h2>五、AI 生成内容与标识提示</h2>
+        <p>本站主要展示和整理 AI 绘画相关图片与参数，部分内容可能属于 AI 生成或合成内容。你将本站内容下载、转发、发布到其他平台或用于公开传播时，应根据适用法律法规、平台规则及具体使用场景，主动说明或标识其 AI 生成/合成属性。</p>
+        <p>本站不鼓励也不支持用户删除、篡改、伪造、隐藏图片文件中的生成标识、元数据、水印或其他来源说明。因用户自行使用、传播、修改、商用或未正确标识而产生的争议，由用户自行承担责任。</p>
+      </section>
+
+      <section class="terms-section">
+        <h2>六、图片上传与元数据读取</h2>
+        <p>当你使用“原图数据读取”等功能并主动上传图片时，本站会为完成解析功能接收并处理你上传的图片文件及其可能包含的元数据，例如提示词、生成参数、EXIF、文件名、文件大小、图片格式等。图片元数据可能包含账号、设备、地理位置、时间、软件环境或其他敏感信息，请在上传前自行检查并确认你有权处理该图片。</p>
+        <p>你不得上传含有他人隐私、未授权肖像、违法内容、商业秘密、涉密信息、未成年人敏感信息或其他你无权处理的图片。若因此引发投诉、索赔、行政处理或纠纷，由上传者自行承担责任。</p>
+      </section>
+
+      <section class="terms-section">
+        <h2>七、个人信息与日志</h2>
+        <p>本站在提供服务过程中，可能处理用户主动提交的信息、浏览器请求信息、接口访问日志、举报信息、图片文件名、QQ 号或群来源字段、上传解析所需的图片和元数据等。本站将尽量遵循合法、正当、必要原则，仅在实现页面展示、检索、解析、举报处理、安全审计、故障排查和合规处理所需范围内处理相关信息。</p>
+        <p>如你认为本站展示的信息涉及你的个人信息，或需要更正、删除、屏蔽相关内容，可通过站内举报功能或本站公开的联系渠道提交请求。为核验请求真实性，本站可能要求你提供必要的身份证明、权利证明、内容链接或文件名等材料。</p>
+      </section>
+
+      <section class="terms-section">
+        <h2>八、权利通知与举报处理</h2>
+        <p>本站已提供“举报图片”入口。权利人或相关用户认为本站内容存在违法违规、侵权、侵犯隐私、版权争议、错误来源、未成年人风险或其他问题的，可以通过举报功能提交反馈。</p>
+        <p>为便于处理，请尽量提供：被投诉内容的文件名、页面位置或截图；投诉原因；构成侵权或违法的初步证据；你的真实身份信息及联系方式；如由代理人提交，还应提供授权证明。本站在收到有效通知后，将根据证据情况和服务类型采取删除、屏蔽、断开链接、限制展示、补充说明或驳回投诉等必要措施。</p>
+        <p>如果投诉或通知内容不真实、不准确或缺乏必要证据，导致本站或他人受到损害，提交者应自行承担相应责任。</p>
+      </section>
+
+      <section class="terms-section">
+        <h2>九、服务变更、中断与内容处理</h2>
+        <p>本站为个人开发和维护，可能因服务器、接口、网络、第三方服务、成本控制、内容整改、合规要求、功能调整或不可抗力等原因，随时修改、中断、下线部分或全部功能。本站不保证服务持续、稳定、无错误或永久保存任何图片、参数、举报记录或搜索结果。</p>
+        <p>对涉嫌违法违规、侵权、侵犯隐私、影响站点安全或违反本条款的内容或行为，本站有权在不事先通知的情况下采取处理措施。</p>
+      </section>
+
+      <section class="terms-section">
+        <h2>十、免责声明与责任限制</h2>
+        <ul>
+          <li>本站展示内容仅供参考，不构成绘画、设计、商业授权、版权许可、法律意见或任何形式的专业建议。</li>
+          <li>用户因依赖本站内容、下载使用图片、复用提示词、商业使用、模型训练、二次传播、未标识 AI 内容或与第三方发生纠纷造成的损失，由用户自行承担。</li>
+          <li>因黑客攻击、网络故障、服务器故障、第三方接口异常、浏览器兼容、用户设备问题、不可抗力或依法依规处理造成的服务异常，本站将在合理范围内尽力修复，但不承担超出法律规定的责任。</li>
+        </ul>
+      </section>
+
+      <section class="terms-section">
+        <h2>十一、条款更新与法律适用</h2>
+        <p>本站可根据功能变化、合规要求或运营需要更新本条款。更新后的条款将在本页面展示，用户继续使用本站即视为接受更新后的条款。</p>
+        <p>本条款的订立、效力、解释、履行及争议解决，适用中华人民共和国大陆地区法律。因使用本站产生争议的，各方应先友好协商；协商不成的，可依法向有管辖权的人民法院提起诉讼。</p>
+        <p class="terms-muted">最后更新日期：2026年6月3日</p>
+      </section>
+
+      <div class="terms-actions">
+        <a class="terms-btn" href="./" onclick="navigateToGallery(event)">← 返回图库</a>
+        <a class="terms-btn secondary" href="#/terms" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">回到顶部</a>
+      </div>
+    </div>
+  </article>
+</main>
 
 <div class="meta-tooltip" id="metaTooltip">
   <div class="meta-tooltip-header">📋 PNG Metadata</div>
@@ -2475,6 +2893,126 @@ function showCopyFeedback(btn) {
   }, 1200);
 }
 
+
+
+/* ===== FIRST VISIT NOTICE ===== */
+const NOTICE_STORAGE_KEY = 'yuandian_ai_gallery_notice_v0_4_alpha_20260603_seen';
+let noticeCountdownTimer = null;
+
+function hasSeenWelcomeNotice() {
+  try {
+    return localStorage.getItem(NOTICE_STORAGE_KEY) === '1';
+  } catch (e) {
+    return window.__welcomeNoticeSeen === true;
+  }
+}
+
+function rememberWelcomeNoticeSeen() {
+  try {
+    localStorage.setItem(NOTICE_STORAGE_KEY, '1');
+  } catch (e) {
+    window.__welcomeNoticeSeen = true;
+  }
+}
+
+function showWelcomeNoticeIfNeeded() {
+  if (hasSeenWelcomeNotice()) return;
+
+  const backdrop = document.getElementById('noticeModalBackdrop');
+  const btn = document.getElementById('noticeConfirmBtn');
+  if (!backdrop || !btn || backdrop.classList.contains('open')) return;
+
+  backdrop.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  let remaining = 5;
+  btn.disabled = true;
+  btn.textContent = `我已了解（${remaining}s）`;
+  clearInterval(noticeCountdownTimer);
+  noticeCountdownTimer = setInterval(() => {
+    remaining -= 1;
+    if (remaining > 0) {
+      btn.textContent = `我已了解（${remaining}s）`;
+      return;
+    }
+    clearInterval(noticeCountdownTimer);
+    noticeCountdownTimer = null;
+    btn.disabled = false;
+    btn.textContent = '确定进入';
+  }, 1000);
+}
+
+function closeWelcomeNotice() {
+  const btn = document.getElementById('noticeConfirmBtn');
+  if (btn && btn.disabled) return;
+
+  clearInterval(noticeCountdownTimer);
+  noticeCountdownTimer = null;
+  rememberWelcomeNoticeSeen();
+
+  const backdrop = document.getElementById('noticeModalBackdrop');
+  if (backdrop) backdrop.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ===== SIMPLE CLIENT ROUTING ===== */
+let galleryInitialized = false;
+
+function isTermsRoute() {
+  const cleanPath = window.location.pathname.replace(/\/+$/, '');
+  const hash = window.location.hash.replace(/^#\/?/, '').replace(/\/+$/, '');
+  const queryRoute = new URLSearchParams(window.location.search).get('route');
+  return cleanPath.endsWith('/terms') || hash === 'terms' || queryRoute === 'terms';
+}
+
+function navigateToTerms(event) {
+  if (event && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button === 1)) return;
+  if (event) event.preventDefault();
+  if (window.location.hash !== '#/terms') {
+    history.pushState({ route: 'terms' }, '', '#/terms');
+  }
+  renderRoute();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function navigateToGallery(event) {
+  if (event && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button === 1)) return;
+  if (event) event.preventDefault();
+  const galleryPath = window.location.pathname.replace(/\/terms\/?$/, '/') || './';
+  history.pushState({ route: 'gallery' }, '', galleryPath + window.location.search);
+  renderRoute();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showTermsRoute() {
+  document.body.classList.add('terms-route');
+  document.title = '用户条款 - 原典AI图库';
+  document.body.style.overflow = '';
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) overlay.classList.add('hidden');
+  if (bootLog && typeof bootLog.done === 'function') bootLog.done();
+  setTimeout(showWelcomeNoticeIfNeeded, 0);
+}
+
+function showGalleryRoute() {
+  document.body.classList.remove('terms-route');
+  document.title = '原典AI 图鉴';
+  if (!galleryInitialized) {
+    galleryInitialized = true;
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.classList.remove('hidden');
+    init();
+  }
+}
+
+function renderRoute() {
+  if (isTermsRoute()) showTermsRoute();
+  else showGalleryRoute();
+}
+
+window.addEventListener('popstate', renderRoute);
+window.addEventListener('hashchange', renderRoute);
+
 /* ===== INIT WITH BOOT LOG ===== */
 
 async function init() {
@@ -2522,6 +3060,7 @@ async function init() {
 
     await sleep(500);
     document.getElementById('loadingOverlay').classList.add('hidden');
+    showWelcomeNoticeIfNeeded();
 
   } catch (e) {
     bootLog.add(`✗ Connection failed: ${e.message}`, 'err');
@@ -2536,6 +3075,7 @@ async function init() {
 
     await sleep(2000);
     document.getElementById('loadingOverlay').classList.add('hidden');
+    showWelcomeNoticeIfNeeded();
   }
 }
 
@@ -2860,65 +3400,73 @@ function selectReason(btn) {
   document.getElementById('reportSubmitBtn').disabled = false;
 }
 
-function submitReport() {
+async function submitReport() {
   const item = reportTargetIndex !== null ? currentItems[reportTargetIndex] : null;
   if (!item) return;
-  const reason = document.querySelector('.report-reason-btn.selected')?.textContent?.trim() || '';
+
+  const selectedReason = document.querySelector('.report-reason-btn.selected');
+  const reason = selectedReason?.textContent?.trim() || '';
   const note = document.getElementById('reportNote')?.value?.trim() || '';
-
-  // Disable button and show loading state
   const submitBtn = document.getElementById('reportSubmitBtn');
-  submitBtn.disabled = true;
-  submitBtn.textContent = '提交中...';
 
-  fetch(`${API}/api/report`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      filename:   item.filename,
-      collection: currentCollection,
-      reason:     reason,
-      note:       note,
-      qq_sender:  item.qq_sender || '',
-    }),
-  })
-    .then(r => {
-      if (!r.ok) return r.json().then(d => { throw new Error(d.detail || r.status); });
-      return r.json();
-    })
-    .then(() => {
-      document.getElementById('reportModalContent').innerHTML = `
-        <div class="report-success">
-          <div class="report-success-icon">✅</div>
-          <div class="report-success-title">举报已提交</div>
-          <div class="report-success-sub">感谢您的反馈，我们将尽快处理。</div>
-        </div>`;
-      setTimeout(closeReportModal, 2200);
-    })
-    .catch(err => {
-      submitBtn.disabled = false;
-      submitBtn.textContent = '提交举报';
-      // Show inline error without closing modal
-      const errEl = document.getElementById('reportErrorMsg');
-      if (errEl) {
-        errEl.textContent = '提交失败：' + err.message;
-        errEl.style.display = '';
-      } else {
-        const footer = document.querySelector('.report-modal-footer');
-        const div = document.createElement('div');
-        div.id = 'reportErrorMsg';
-        div.style.cssText = 'font-size:12px;color:#f87171;padding:0 20px 10px;font-family:var(--mono)';
-        div.textContent = '提交失败：' + err.message;
-        footer.before(div);
-      }
+  if (!reason) return;
+
+  const payload = {
+    filename: item.filename || '未知文件',
+    collection: currentCollection || '',
+    reason,
+    note,
+    qq_sender: item.qq_sender || '',
+    thumb_url: item.thumb_url ? `${API}${item.thumb_url}` : ''
+  };
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = '提交中...';
+  }
+
+  const oldError = document.querySelector('.report-error');
+  if (oldError) oldError.remove();
+
+  try {
+    const res = await fetch(`${API}/api/report`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
     });
+
+    let data = null;
+    try { data = await res.json(); } catch { data = null; }
+
+    if (!res.ok || (data && data.status && data.status !== 'ok')) {
+      const detail = data?.detail || data?.message || `HTTP ${res.status}`;
+      throw new Error(detail);
+    }
+
+    document.getElementById('reportModalContent').innerHTML = `
+      <div class="report-success">
+        <div class="report-success-icon">✅</div>
+        <div class="report-success-title">举报已提交</div>
+        <div class="report-success-sub">感谢您的反馈，我们将尽快处理。</div>
+      </div>`;
+    setTimeout(closeReportModal, 2200);
+  } catch (err) {
+    const footer = document.querySelector('#reportModalContent .report-modal-footer');
+    if (footer) {
+      footer.insertAdjacentHTML('beforebegin', `<div class="report-error">提交失败：${escapeHtml(err.message || String(err))}</div>`);
+    }
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '重新提交';
+    }
+  }
 }
 
 document.getElementById('reportModalBackdrop').addEventListener('click', e => {
   if (e.target === document.getElementById('reportModalBackdrop')) closeReportModal();
 });
 
-init();
+renderRoute();
 </script>
 </body>
 </html>
