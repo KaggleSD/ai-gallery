@@ -1877,6 +1877,52 @@ body.terms-route .terms-page { display: block; }
 }
 .terms-section strong { color: #fff; }
 .terms-muted { color: var(--text2) !important; }
+
+/* ===== Content Notice Bar ===== */
+.content-notice-bar {
+  max-width: 1400px;
+  margin: 12px auto 0;
+  padding: 0 32px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(239,68,68,0.07);
+  border: 1px solid rgba(239,68,68,0.22);
+  border-radius: 10px;
+  padding: 11px 18px;
+  max-width: calc(1400px - 64px);
+  margin: 12px auto 0;
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 64px);
+}
+.content-notice-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(239,68,68,0.55);
+  color: #f87171;
+  margin-top: 1px;
+}
+.content-notice-text {
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.7;
+}
+.content-notice-muted {
+  color: var(--text2);
+  font-size: 12.5px;
+}
+@media (max-width: 768px) {
+  .content-notice-bar {
+    width: calc(100% - 32px);
+    padding: 10px 14px;
+  }
+}
 .terms-actions {
   display: flex;
   gap: 10px;
@@ -1991,6 +2037,13 @@ body.terms-route .terms-page { display: block; }
 </div>
 
 <div class="search-result-hint" id="searchHint" style="display:none"></div>
+
+<div class="content-notice-bar">
+  <span class="content-notice-icon">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8"/><line x1="12" y1="12" x2="12" y2="17"/></svg>
+  </span>
+  <span class="content-notice-text">本站拒绝收录含有色情露骨内容，如有发现，请点击举报。<span class="content-notice-muted">（图片太多了我个人管不过来 qwq）</span></span>
+</div>
 
 <div class="gallery-wrap">
   <div class="gallery" id="gallery"></div>
@@ -2129,7 +2182,7 @@ body.terms-route .terms-page { display: block; }
       <img id="lbImg" src="" alt="">
       <div class="lightbox-info" id="lbInfo"></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center">
-        <button id="lbDownload" class="lb-download-btn" onclick="downloadImage()">⬇ 下载原图</button>
+        <a id="lbDownload" class="lb-download-btn" download>⬇ 下载原图</a>
         <button class="lb-meta-toggle" id="lbMetaToggle" onclick="toggleLbMeta()">📋 元数据</button>
       </div>
     </div>
@@ -3315,9 +3368,7 @@ function updateLightbox() {
   if (item.file_date) parts.push(`<span>${item.file_date}</span>`);
   document.getElementById('lbInfo').innerHTML = parts.join(' &nbsp;·&nbsp; ');
 
-  const dlBtn = document.getElementById('lbDownload');
-  dlBtn.dataset.url = `${API}${item.url}${item.url.includes('?') ? '&' : '?'}raw=1`;
-  dlBtn.dataset.filename = item.filename || 'image';
+  document.getElementById('lbDownload').href = `${API}${item.url}${item.url.includes('?') ? '&' : '?'}raw=1`;
 
   document.getElementById('lbMetaToggle').style.display = currentCollection === 'ai' ? '' : 'none';
 
@@ -3467,38 +3518,6 @@ async function submitReport() {
 document.getElementById('reportModalBackdrop').addEventListener('click', e => {
   if (e.target === document.getElementById('reportModalBackdrop')) closeReportModal();
 });
-
-/* ===== DOWNLOAD (blob fetch, forces save dialog on cross-origin images) ===== */
-async function downloadImage() {
-  const btn = document.getElementById('lbDownload');
-  const url = btn.dataset.url;
-  const filename = btn.dataset.filename || 'image';
-  if (!url) return;
-
-  const original = btn.textContent;
-  btn.textContent = '⏳ 下载中…';
-  btn.disabled = true;
-
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const blob = await res.blob();
-    const blobUrl = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = blobUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(blobUrl);
-  } catch (e) {
-    console.error('Download failed:', e);
-    alert('下载失败，请稍后重试');
-  } finally {
-    btn.textContent = original;
-    btn.disabled = false;
-  }
-}
 
 renderRoute();
 </script>
