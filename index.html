@@ -2129,7 +2129,7 @@ body.terms-route .terms-page { display: block; }
       <img id="lbImg" src="" alt="">
       <div class="lightbox-info" id="lbInfo"></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center">
-        <a id="lbDownload" class="lb-download-btn" download>⬇ 下载原图</a>
+        <button id="lbDownload" class="lb-download-btn" onclick="downloadImage()">⬇ 下载原图</button>
         <button class="lb-meta-toggle" id="lbMetaToggle" onclick="toggleLbMeta()">📋 元数据</button>
       </div>
     </div>
@@ -3315,7 +3315,9 @@ function updateLightbox() {
   if (item.file_date) parts.push(`<span>${item.file_date}</span>`);
   document.getElementById('lbInfo').innerHTML = parts.join(' &nbsp;·&nbsp; ');
 
-  document.getElementById('lbDownload').href = `${API}${item.url}${item.url.includes('?') ? '&' : '?'}raw=1`;
+  const dlBtn = document.getElementById('lbDownload');
+  dlBtn.dataset.url = `${API}${item.url}${item.url.includes('?') ? '&' : '?'}raw=1`;
+  dlBtn.dataset.filename = item.filename || 'image';
 
   document.getElementById('lbMetaToggle').style.display = currentCollection === 'ai' ? '' : 'none';
 
@@ -3465,6 +3467,38 @@ async function submitReport() {
 document.getElementById('reportModalBackdrop').addEventListener('click', e => {
   if (e.target === document.getElementById('reportModalBackdrop')) closeReportModal();
 });
+
+/* ===== DOWNLOAD (blob fetch, forces save dialog on cross-origin images) ===== */
+async function downloadImage() {
+  const btn = document.getElementById('lbDownload');
+  const url = btn.dataset.url;
+  const filename = btn.dataset.filename || 'image';
+  if (!url) return;
+
+  const original = btn.textContent;
+  btn.textContent = '⏳ 下载中…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(blobUrl);
+  } catch (e) {
+    console.error('Download failed:', e);
+    alert('下载失败，请稍后重试');
+  } finally {
+    btn.textContent = original;
+    btn.disabled = false;
+  }
+}
 
 renderRoute();
 </script>
