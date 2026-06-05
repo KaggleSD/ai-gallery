@@ -655,6 +655,35 @@ body::before {
   white-space: nowrap;
 }
 .search-clear-btn:hover { border-color: var(--danger); color: var(--danger); }
+.search-type-toggle {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--bg3);
+  border-radius: 6px;
+  padding: 2px;
+  flex-shrink: 0;
+}
+.search-type-btn {
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--mono);
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.search-type-btn:hover { color: var(--text); }
+.search-type-btn.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 1px 4px rgba(124,106,239,0.3);
+}
+
 .search-result-hint {
   max-width: 1400px;
   margin: 12px auto 0;
@@ -2030,6 +2059,10 @@ body.terms-route .terms-page { display: block; }
 <div class="search-bar" id="searchBar">
   <div class="search-inner">
     <div class="search-icon">🔍</div>
+    <div class="search-type-toggle" id="searchTypeToggle">
+      <button class="search-type-btn active" id="searchTypeQQ" onclick="setSearchType('qq')">QQ</button>
+      <button class="search-type-btn" id="searchTypeTag" onclick="setSearchType('tag')">Tag</button>
+    </div>
     <input type="text" id="searchInput" class="search-input" placeholder="输入QQ号搜索图片..." autocomplete="off">
     <button class="search-btn" id="searchBtn" onclick="doSearch()">搜索</button>
     <button class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()" style="display:none">✕ 清除</button>
@@ -2182,7 +2215,7 @@ body.terms-route .terms-page { display: block; }
       <img id="lbImg" src="" alt="">
       <div class="lightbox-info" id="lbInfo"></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center">
-        <a id="lbDownload" class="lb-download-btn" download>⬇ 下载原图</a>
+        <button id="lbDownload" class="lb-download-btn" onclick="downloadCurrentImage()">⬇ 下载原图</button>
         <button class="lb-meta-toggle" id="lbMetaToggle" onclick="toggleLbMeta()">📋 元数据</button>
       </div>
     </div>
@@ -2269,6 +2302,8 @@ const metaCache = {};
 let hoverTimer = null;
 let currentHoverCard = null;
 let searchQQ = '';
+let searchTag = '';      // tag 搜索关键词
+let searchType = 'qq';  // 'qq' | 'tag'
 let lbMetaVisible = false;
 let currentFullMetaText = '';
 
@@ -3187,6 +3222,7 @@ function switchTab(key) {
   currentCollection = key;
   currentPage = 1;
   searchQQ = '';
+  searchTag = '';
   softwareFilter = '';
   softwareListLoaded = false;
   softwareList = [];
@@ -3198,28 +3234,148 @@ function switchTab(key) {
   loadImages();
 }
 
+function setSearchType(type) {
+  searchType = type;
+  const qqBtn  = document.getElementById('searchTypeQQ');
+  const tagBtn = document.getElementById('searchTypeTag');
+  const input  = document.getElementById('searchInput');
+  if (type === 'qq') {
+    qqBtn.classList.add('active');
+    tagBtn.classList.remove('active');
+    input.placeholder = '输入QQ号搜索图片...';
+  } else {
+    tagBtn.classList.add('active');
+    qqBtn.classList.remove('active');
+    input.placeholder = '输入关键词搜索 Tag / Prompt（空格=AND，|=OR）...';
+  }
+}
+
 function doSearch() {
   const val = document.getElementById('searchInput').value.trim();
   if (!val) return;
-  searchQQ = val;
   currentPage = 1;
   document.getElementById('searchClearBtn').style.display = '';
   document.getElementById('searchHint').style.display = '';
-  document.getElementById('searchHint').innerHTML = `搜索 QQ: <span>${escapeHtml(val)}</span> 的图片...`;
-  loadImages().then(() => {
-    const hint = document.getElementById('searchHint');
-    const total = document.querySelector('.page-info');
-    hint.innerHTML = `QQ: <span>${escapeHtml(searchQQ)}</span> — 共找到 <span>${currentItems.length > 0 ? document.getElementById('pagination').querySelector('.page-info')?.textContent || '' : '0'}</span> 页结果`;
-  });
+
+  if (searchType === 'qq') {
+    searchQQ  = val;
+    searchTag = '';
+    document.getElementById('searchHint').innerHTML = `搜索 QQ: <span>${escapeHtml(val)}</span> 的图片...`;
+    loadImages().then(() => {
+      document.getElementById('searchHint').innerHTML =
+        `QQ: <span>${escapeHtml(searchQQ)}</span> — 共 <span>${totalPages}</span> 页结果`;
+    });
+  } else {
+    searchTag = val;
+    searchQQ  = '';
+    document.getElementById('searchHint').innerHTML = `Tag 搜索: <span>${escapeHtml(val)}</span>...`;
+    loadTagSearch(val);
+  }
 }
 
 function clearSearch() {
-  searchQQ = '';
+  searchQQ  = '';
+  searchTag = '';
   currentPage = 1;
   document.getElementById('searchInput').value = '';
   document.getElementById('searchClearBtn').style.display = 'none';
   document.getElementById('searchHint').style.display = 'none';
   loadImages();
+}
+
+async function loadTagSearch(query) {
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  document.getElementById('pagination').innerHTML = '';
+
+  try {
+    const url = `${API}/api/search?q=${encodeURIComponent(query)}&page=${currentPage}&page_size=20&type=all`;
+    const res  = await fetch(url);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.detail || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    totalPages   = data.total_pages;
+    currentItems = data.items;
+
+    document.getElementById('searchHint').innerHTML =
+      `Tag 搜索: <span>${escapeHtml(query)}</span> — 共找到 <span>${data.total}</span> 张，<span>${totalPages}</span> 页`;
+
+    if (currentItems.length === 0) {
+      gallery.innerHTML = '<div class="empty">未找到匹配的图片</div>';
+      return;
+    }
+
+    gallery.innerHTML = currentItems.map((item, i) => {
+      const isBlurred = item.safety === 'nsfw';
+      return `
+      <div class="card" data-idx="${i}" onclick="openLightbox(${i})" style="animation-delay:${i * 0.04}s">
+        <div class="card-img-wrap">
+          <img src="${API}${item.thumb_url}" alt="${item.filename}" loading="lazy">
+          ${isBlurred ? `<div class="blur-overlay"><span class="blur-hint">已处理</span></div>` : ''}
+        </div>
+        <div class="card-info">
+          <div class="card-filename">${item.filename}</div>
+          <div class="card-meta">
+            <span>${item.width && item.height ? item.width + '×' + item.height : ''}</span>
+            ${item.software ? `<span class="card-tag ${getTagClass(item.software)}">${item.software}</span>` : ''}
+          </div>
+          ${item.qq_sender ? `<div class="card-meta" style="margin-top:2px">
+            <span class="card-qq" onclick="event.stopPropagation();quickSearchQQ('${item.qq_sender}')" title="点击搜索该QQ的所有图片">QQ: ${item.qq_sender}</span>
+            ${item.group_name ? `<span style="font-size:10px;color:var(--text2)">${item.group_name}</span>` : ''}
+          </div>` : ''}
+        </div>
+        <div class="card-actions" onclick="event.stopPropagation()">
+          <button class="card-action-btn" onclick="viewCardInfo(${i})" title="查看详情">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            查看信息
+          </button>
+          <button class="card-action-btn report-btn" onclick="openReportModal(${i})" title="举报此图">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            举报
+          </button>
+        </div>
+      </div>`;
+    }).join('');
+
+    // Tag 搜索也要支持分页
+    renderPaginationForTag(query);
+
+  } catch (e) {
+    gallery.innerHTML =
+      `<div class="empty error">
+        <div class="error-title">⚠ Tag 搜索失败</div>
+        <div class="error-detail">${e.name}: ${e.message}</div>
+      </div>`;
+    document.getElementById('searchHint').innerHTML =
+      `Tag 搜索: <span>${escapeHtml(query)}</span> — <span style="color:var(--danger)">搜索失败</span>`;
+  }
+}
+
+function renderPaginationForTag(query) {
+  const container = document.getElementById('pagination');
+  if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+  let html = `<button class="page-btn" onclick="goTagPage(${currentPage - 1},'${escapeHtml(query)}')" ${currentPage <= 1 ? 'disabled' : ''}>‹</button>`;
+  const range = getPageRange(currentPage, totalPages, 5);
+  for (const p of range) {
+    if (p === '...') {
+      html += `<span class="page-info">…</span>`;
+    } else {
+      html += `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goTagPage(${p},'${escapeHtml(query)}')">${p}</button>`;
+    }
+  }
+  html += `<button class="page-btn" onclick="goTagPage(${currentPage + 1},'${escapeHtml(query)}')" ${currentPage >= totalPages ? 'disabled' : ''}>›</button>`;
+  html += `<span class="page-info">${currentPage}/${totalPages}</span>`;
+  container.innerHTML = html;
+}
+
+function goTagPage(p, query) {
+  if (p < 1 || p > totalPages) return;
+  currentPage = p;
+  loadTagSearch(query);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 document.getElementById('searchInput').addEventListener('keydown', e => {
@@ -3350,6 +3506,40 @@ function closeLightbox() {
   document.getElementById('lbMetaToggle').classList.remove('active');
 }
 
+async function downloadCurrentImage() {
+  const btn = document.getElementById('lbDownload');
+  const url      = btn.dataset.url;
+  const filename = btn.dataset.filename || 'image';
+  if (!url) return;
+
+  const origText = btn.textContent;
+  btn.textContent = '⏳ 下载中...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(blobUrl);
+    btn.textContent = '✓ 已下载';
+    setTimeout(() => {
+      btn.textContent = origText;
+      btn.disabled = false;
+    }, 1800);
+  } catch (e) {
+    btn.textContent = '✗ 失败，重试';
+    btn.disabled = false;
+    setTimeout(() => { btn.textContent = origText; }, 2200);
+  }
+}
+
 function navLightbox(dir) {
   lightboxIndex = (lightboxIndex + dir + currentItems.length) % currentItems.length;
   updateLightbox();
@@ -3368,7 +3558,8 @@ function updateLightbox() {
   if (item.file_date) parts.push(`<span>${item.file_date}</span>`);
   document.getElementById('lbInfo').innerHTML = parts.join(' &nbsp;·&nbsp; ');
 
-  document.getElementById('lbDownload').href = `${API}${item.url}${item.url.includes('?') ? '&' : '?'}raw=1`;
+  document.getElementById('lbDownload').dataset.url = `${API}${item.url}${item.url.includes('?') ? '&' : '?'}raw=1`;
+  document.getElementById('lbDownload').dataset.filename = item.filename || 'image';
 
   document.getElementById('lbMetaToggle').style.display = currentCollection === 'ai' ? '' : 'none';
 
